@@ -1,5 +1,5 @@
 import { Fragment } from "react";
-import { NavLink, Link } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 
 import {
   Segment,
@@ -21,7 +21,7 @@ const MainNavigation = () => {
       <MenuItem>
         <Search /* fluid input={{ fluid: true }} */ />
       </MenuItem>
-      <MenuItem as={NavLink} to="/monsters">
+      <MenuItem as={NavLink} to="/member/all">
         <Header inverted>Monsters</Header>
       </MenuItem>
       <MenuItem>

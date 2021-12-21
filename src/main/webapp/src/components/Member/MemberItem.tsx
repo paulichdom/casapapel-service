@@ -1,35 +1,37 @@
 import React from "react";
-
+import { Link } from "react-router-dom";
 import { Card, Image, Icon } from "semantic-ui-react";
+import { Member } from "../../types/Member";
 
 interface PropTypes {
-  name: String;
+  member: Member;
 }
 
-const MonsterItem = (props: PropTypes) => {
-  const imageUrl = new URL(`/${props.name}`, `https://robohash.org`);
+const MemberItem = (props: PropTypes) => {
+  const {name, mainSkill } = props.member;
+  const imageUrl = new URL(`/${name}`, `https://robohash.org`);
   imageUrl.searchParams.append("set", "set2");
   
   return (
-    <Card>
+    <Card raised>
       <Image src={imageUrl.href} wrapped ui={false} />
       <Card.Content>
-        <Card.Header>{props.name}</Card.Header>
+        <Card.Header>{name}</Card.Header>
         <Card.Meta>
           <span className="date">Joined in 2015</span>
         </Card.Meta>
         <Card.Description>
-          Matthew is a musician living in Nashville.
+          {`Specialty: ${mainSkill}`}
         </Card.Description>
       </Card.Content>
       <Card.Content extra>
-        <a>
+        <Link to="/">
           <Icon name="user" />
-          22 Friends
-        </a>
+          Skills
+        </Link>
       </Card.Content>
     </Card>
   );
 };
 
-export default MonsterItem;
+export default MemberItem;

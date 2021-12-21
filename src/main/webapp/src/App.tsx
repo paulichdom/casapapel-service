@@ -1,8 +1,8 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 import Layout from "./components/Layout/Layout";
-import Home from "./pages/Home";
-import Monsters from "./pages/Monsters";
+import Home from "./views/Home";
+import MemberList from "./views/MemberList";
 
 import "./App.css";
 
@@ -11,7 +11,7 @@ function App() {
     <Router>
       <Layout>
         <Routes>
-          <Route path="/monsters" element={<Monsters />} />
+          <Route path="/member/all" element={<MemberList />} />
           <Route path="/" element={<Home />} />
         </Routes>
       </Layout>
