@@ -18,6 +18,7 @@ import java.util.Set;
 @RestController
 @RequestMapping("heist")
 @Validated
+@CrossOrigin
 public class HeistResource {
 
     private final HeistService heistService;
