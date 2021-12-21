@@ -133,4 +133,9 @@ public class MemberServiceImpl implements MemberService {
                 break;
         }
     }
+
+    @Override
+    public List<MemberDTO> fetchAllMembers() {
+        return memberMapper.membersToMemberDTOs(this.getAllMembers());
+    }
 }
