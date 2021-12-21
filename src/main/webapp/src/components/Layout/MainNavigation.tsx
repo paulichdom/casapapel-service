@@ -1,4 +1,5 @@
 import { Fragment } from "react";
+import { NavLink, Link } from "react-router-dom";
 
 import {
   Segment,
@@ -14,13 +15,13 @@ import {
 const MainNavigation = () => {
   const userNavigation = (
     <Fragment>
-      <Menu.Item style={{ borderBottom: "none" }}>
+      <Menu.Item as={NavLink} to="/" style={{ borderBottom: "none" }}>
         <Icon name="optin monster" color="teal" size="huge" inverted />
       </Menu.Item>
       <MenuItem>
         <Search /* fluid input={{ fluid: true }} */ />
       </MenuItem>
-      <MenuItem>
+      <MenuItem as={NavLink} to="/monsters">
         <Header inverted>Monsters</Header>
       </MenuItem>
       <MenuItem>

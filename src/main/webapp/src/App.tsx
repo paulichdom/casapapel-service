@@ -1,13 +1,21 @@
-import React from 'react';
-import Layout from "./components/Layout/Layout"
-import Home from './containers/Home';
-import './App.css';
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+
+import Layout from "./components/Layout/Layout";
+import Home from "./pages/Home";
+import Monsters from "./pages/Monsters";
+
+import "./App.css";
 
 function App() {
   return (
-    <Layout>
-      <Home />
-    </Layout>
+    <Router>
+      <Layout>
+        <Routes>
+          <Route path="/monsters" element={<Monsters />} />
+          <Route path="/" element={<Home />} />
+        </Routes>
+      </Layout>
+    </Router>
   );
 }
 
