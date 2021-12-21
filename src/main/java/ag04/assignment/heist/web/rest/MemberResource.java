@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.List;
 
 @RestController
 @RequestMapping("member")
@@ -59,5 +60,10 @@ public class MemberResource {
     @GetMapping("/{member_id}/skills")
     public ResponseEntity<MemberSkillSetDTO> viewMemberSkills(@PathVariable Long member_id) {
         return new ResponseEntity<>(memberSkillService.getMemberSkillSet(member_id), HttpStatus.OK);
+    }
+
+    @GetMapping("/all")
+    public ResponseEntity<List<MemberDTO>> viewAllMembers() {
+        return new ResponseEntity<>(memberService.fetchAllMembers(), HttpStatus.OK);
     }
 }

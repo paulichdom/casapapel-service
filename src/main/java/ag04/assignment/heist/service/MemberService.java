@@ -13,4 +13,5 @@ public interface MemberService {
     Member createNewMember(MemberDTO newMember);
     MemberDTO getMemberDetails(Long member_id);
     void updateMemberStatusByHeistOutcome(Long heist_id, HeistOutcomeSummary summary);
+    List<MemberDTO> fetchAllMembers();
 }
