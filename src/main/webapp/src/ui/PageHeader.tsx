@@ -9,16 +9,17 @@ import {
   SemanticCOLORS,
 } from "semantic-ui-react";
 
-interface PropsTypes {
+interface PropTypes {
   title: string;
   showButton: boolean;
-  buttonTitle: string;
-  buttonColor: SemanticCOLORS;
-  path: string;
+  buttonTitle?: string;
+  buttonColor?: SemanticCOLORS;
+  path?: string;
+  subtitle?: string;
 }
 
-const PageHeader = (props: PropsTypes) => {
-  const { title, showButton, path, buttonColor, buttonTitle } = props;
+const PageHeader = (props: PropTypes) => {
+  const { title, showButton, path, buttonColor, buttonTitle, subtitle } = props;
 
   return (
     <Fragment>
@@ -35,10 +36,11 @@ const PageHeader = (props: PropsTypes) => {
           <Icon name="add" />
         </Button>
       )}
-      <Header as="h2" textAlign="left">
+      <Header as="h2" textAlign="left" dividing={!showButton}>
         {title}
+        {subtitle && <Header.Subheader>{subtitle}</Header.Subheader>}
       </Header>
-      <Divider />
+      {showButton && <Divider />}
     </Fragment>
   );
 };

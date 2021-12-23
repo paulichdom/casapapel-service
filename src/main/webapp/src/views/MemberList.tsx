@@ -26,7 +26,7 @@ const Members = () => {
         showButton={true}
         buttonTitle="New Monster"
         buttonColor="blue"
-        path="/member/new"
+        path="/"
       />
       <MemberItemGroup memberList={memberList}/>
     </Fragment>

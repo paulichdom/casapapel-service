@@ -1,5 +1,6 @@
 import { Fragment } from "react";
 import { NavLink } from "react-router-dom";
+import DropdownMenu from "../../ui/DropdownMenu";
 
 import {
   Segment,
@@ -10,6 +11,7 @@ import {
   Image,
   Search,
   MenuItem,
+  Dropdown,
 } from "semantic-ui-react";
 
 const MainNavigation = () => {
@@ -31,10 +33,11 @@ const MainNavigation = () => {
         <Menu.Item>
           <Icon name="bell outline" size="large" inverted />
         </Menu.Item>
-        <Menu.Item>
+        <DropdownMenu />
+        {/* <Menu.Item>
           <Icon name="plus" size="large" inverted />
           <Icon name="caret down" size="large" inverted />
-        </Menu.Item>
+        </Menu.Item> */}
         <Menu.Item>
           <Image
             src="https://robohash.org/zliavatar?bgset=bg1"
