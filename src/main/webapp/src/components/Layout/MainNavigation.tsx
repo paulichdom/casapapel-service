@@ -11,7 +11,6 @@ import {
   Image,
   Search,
   MenuItem,
-  Dropdown,
 } from "semantic-ui-react";
 
 const MainNavigation = () => {
@@ -21,7 +20,7 @@ const MainNavigation = () => {
         <Icon name="optin monster" color="teal" size="huge" inverted />
       </Menu.Item>
       <MenuItem>
-        <Search /* fluid input={{ fluid: true }} */ />
+        <Search />
       </MenuItem>
       <MenuItem as={NavLink} to="/member/all">
         <Header inverted>Monsters</Header>
@@ -34,10 +33,6 @@ const MainNavigation = () => {
           <Icon name="bell outline" size="large" inverted />
         </Menu.Item>
         <DropdownMenu />
-        {/* <Menu.Item>
-          <Icon name="plus" size="large" inverted />
-          <Icon name="caret down" size="large" inverted />
-        </Menu.Item> */}
         <Menu.Item>
           <Image
             src="https://robohash.org/zliavatar?bgset=bg1"

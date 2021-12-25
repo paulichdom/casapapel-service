@@ -1,8 +1,8 @@
 import { FormSkill } from "../types/Skill";
 
-export const skillToSkillDTO = (skill: FormSkill) => {
+export const formSkillToSkill = (skill: FormSkill) => {
   return { name: skill.name, level: "*".repeat(skill.level) };
 };
 
-export const formSkillsToSkillDTOs = (skills: FormSkill[]) =>
-  skills.map((skill) => skillToSkillDTO(skill));
+export const formSkillsToSkills = (skills: FormSkill[]) =>
+  skills.map((skill) => formSkillToSkill(skill));
