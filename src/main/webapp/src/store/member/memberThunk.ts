@@ -4,6 +4,8 @@ import { RestApiException } from "../../types/Exception";
 import { handleRequest } from "../../util/RequestHandler";
 import { Member } from "../../types/Member";
 
+
+// GET -> View all members
 export const getAllMembers = createAsyncThunk<Member[]>(
   "member/all",
   async () => {
@@ -12,10 +14,22 @@ export const getAllMembers = createAsyncThunk<Member[]>(
   }
 );
 
+
+// POST -> Add a new member
 export const addNewMember = createAsyncThunk<
   void,
   Member,
   { rejectValue: RestApiException }
 >("member/new", async (newMemberData: Member, thunkApi) => {
   return handleRequest(MemberService.addNewMember(newMemberData), thunkApi);
+});
+
+
+// GET -> View member details
+export const viewMemberDetails = createAsyncThunk<
+  Member,
+  number,
+  { rejectValue: RestApiException }
+>("member/details", async (memberId: number, thunkApi) => {
+  return handleRequest(MemberService.viewMemberDetails(memberId), thunkApi);
 });

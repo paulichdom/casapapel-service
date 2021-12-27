@@ -20,10 +20,12 @@ import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import { addNewMember } from "../../store/member/memberThunk";
 import { RootState } from "../../store/store";
 import {
-  exceptionResponseMapper,
+  exceptionValidatationMapper,
   filterSkillValidationErrors,
+  exceptionResponseMapper,
 } from "../../util/ExceptionMapper";
 import { clearException } from "../../store/member/memberSlice";
+import { ErrorMessage } from "../../types/Exception";
 
 const statusOptions = [
   { key: "a", text: "Available", value: "AVAILABLE" },
@@ -46,12 +48,18 @@ const MemberForm = () => {
 
   let { exception } = useAppSelector((state: RootState) => state.member);
 
-  let errorMessage, errorMap, skillErrors: string[][] | undefined;
+  let errorMessage: ErrorMessage = {
+      memberAlreadyExists: "",
+      doubleSkill: "",
+      mainSkillReference: "",
+    },
+    errorMap,
+    skillErrors: string[][] | undefined;
 
   if (!exception?.subErrors) {
-    errorMessage = exception?.message;
+    errorMessage = exceptionResponseMapper(exception);
   } else {
-    errorMap = exceptionResponseMapper(exception);
+    errorMap = exceptionValidatationMapper(exception);
   }
 
   if (errorMap) skillErrors = filterSkillValidationErrors(errorMap);
@@ -67,6 +75,7 @@ const MemberForm = () => {
     status,
   });
 
+  // TODO: Redirect after successfull submission
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
     dispatch(addNewMember(newMember()));
@@ -133,7 +142,11 @@ const MemberForm = () => {
             {errorMap && errorMap.name && (
               <ErrorMessageContainer message={errorMap.name} />
             )}
-            {errorMessage && <ErrorMessageContainer message={errorMessage} />}
+            {errorMessage && errorMessage.memberAlreadyExists && (
+              <ErrorMessageContainer
+                message={errorMessage.memberAlreadyExists}
+              />
+            )}
           </Form.Field>
           <Form.Field width="5">
             <label>Email</label>
@@ -177,6 +190,9 @@ const MemberForm = () => {
         <Form.Field>
           <label>Skills</label>
         </Form.Field>
+        {errorMessage && errorMessage.doubleSkill && (
+          <ErrorMessageContainer message={errorMessage.doubleSkill} />
+        )}
         <Transition.Group as={List} duration={650}>
           {formSkills.map((skill, index) => (
             <List.Item key={index}>
@@ -208,7 +224,6 @@ const MemberForm = () => {
                     />
                     <br />
                     <Rating rating={skill.level} maxRating={10} size="mini" />
-                    {/* <ErrorMessageContainer message="Error message" /> */}
                   </Form.Field>
                   <div>
                     {skills.length > 1 && (
@@ -270,6 +285,11 @@ const MemberForm = () => {
             />
             {errorMap && errorMap.mainSkill && (
               <ErrorMessageContainer message={errorMap.mainSkill} />
+            )}
+            {errorMessage && errorMessage.mainSkillReference && (
+              <ErrorMessageContainer
+                message={errorMessage.mainSkillReference}
+              />
             )}
           </Form.Field>
           <Form.Field width="5">

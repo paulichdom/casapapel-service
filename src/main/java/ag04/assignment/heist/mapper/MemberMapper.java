@@ -61,6 +61,7 @@ public class MemberMapper {
             return null;
         } else {
             MemberDTO memberDTO = new MemberDTO();
+            memberDTO.setId(member.getId());
             memberDTO.setName(member.getName());
             memberDTO.setSex(member.getSex().toString());
             memberDTO.setEmail(member.getEmail());

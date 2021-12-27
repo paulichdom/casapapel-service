@@ -2,33 +2,32 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { Card, Image, Icon } from "semantic-ui-react";
 import { Member } from "../../types/Member";
+import {getMemberImage} from "../../services/ImageService"
 
 interface PropTypes {
   member: Member;
 }
 
 const MemberItem = (props: PropTypes) => {
-  const {name, mainSkill } = props.member;
-  const imageUrl = new URL(`/${name}`, `https://robohash.org`);
-  imageUrl.searchParams.append("set", "set2");
-  
+  const { id, name, email, mainSkill, status } = props.member;
+  const imageUrl = getMemberImage(name);
+
   return (
-    <Card raised>
+    <Card raised as={Link} to={`/member/${id}`}>
       <Image src={imageUrl.href} wrapped ui={false} />
       <Card.Content>
         <Card.Header>{name}</Card.Header>
         <Card.Meta>
-          <span className="date">Joined in 2015</span>
+          <span className="email">{email}</span>
         </Card.Meta>
-        <Card.Description>
-          {`Specialty: ${mainSkill}`}
-        </Card.Description>
+        <Card.Description>{`Specialty: ${mainSkill}`}</Card.Description>
       </Card.Content>
       <Card.Content extra>
-        <Link to="/">
-          <Icon name="user" />
-          Skills
-        </Link>
+        {status === "AVAILABLE" && <Icon color="green" name="check circle" />}
+        {status === "INCARCERATED" && <Icon color="red" name="times circle" />}
+        {status === "EXPIRED" && <Icon color="grey" name="minus circle" />}
+        {status === "REDIRED" && <Icon color="orange" name="stop circle" />}
+        {status}
       </Card.Content>
     </Card>
   );

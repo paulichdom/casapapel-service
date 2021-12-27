@@ -19,6 +19,8 @@ import java.util.List;
 @NoArgsConstructor
 public class MemberDTO {
 
+    private Long id;
+
     @NotBlank(message = "{memberdto.name.notblank}")
     private String name;
 

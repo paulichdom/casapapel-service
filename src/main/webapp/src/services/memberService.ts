@@ -4,7 +4,7 @@ import { Member } from "../types/Member";
 const MemberURI = {
   FETCH_ALL: "/member/all",
   NEW_MEMBER: "/member",
-  UPDATE_MEMBER_SKILL: (skillId: number) => `/member/${skillId}/skills`
+  VIEW_MEMBER_DETAILS: (memberId: number) => `/member/${memberId}`,
 };
 
 class MemberService {
@@ -13,7 +13,11 @@ class MemberService {
   }
 
   addNewMember(newMemberData: Member) {
-    return http.post(MemberURI.NEW_MEMBER, newMemberData, );
+    return http.post(MemberURI.NEW_MEMBER, newMemberData);
+  }
+
+  viewMemberDetails(memberId: number) {
+    return http.get(MemberURI.VIEW_MEMBER_DETAILS(memberId));
   }
 }
 

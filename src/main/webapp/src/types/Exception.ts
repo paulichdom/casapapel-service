@@ -16,3 +16,9 @@ export interface RestApiSubException {
 export interface ErrorContainer {
   [key: string]: string;
 }
+
+export interface ErrorMessage {
+  memberAlreadyExists:string
+  doubleSkill: string,
+  mainSkillReference: string,
+}

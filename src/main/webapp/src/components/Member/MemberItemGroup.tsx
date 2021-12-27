@@ -13,7 +13,7 @@ const MemberItemGroup = (props: PropTypes) => {
   return (
     <Card.Group itemsPerRow={4}>
       {memberList.map((member) => (
-        <MemberItem key={member.name.toString()} member={member} />
+        <MemberItem key={member.id} member={member} />
       ))}
     </Card.Group>
   );

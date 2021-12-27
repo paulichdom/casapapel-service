@@ -10,7 +10,7 @@ import {
 } from "semantic-ui-react";
 
 interface PropTypes {
-  title: string;
+  title: string | String;
   showButton: boolean;
   buttonTitle?: string;
   buttonColor?: SemanticCOLORS;
