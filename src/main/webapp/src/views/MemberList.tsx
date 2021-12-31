@@ -3,22 +3,23 @@ import MemberItemGroup from "../components/Member/MemberItemGroup";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { getAllMembers } from "../store/member/memberThunk";
 import { LoadingStatus } from "../types/LoadingStatus";
-import LoadingSpinner from "../ui/LoadingSpinner";
-import PageHeader from "../ui/PageHeader";
+import LoadingSpinner from "../components/ui/LoadingSpinner";
+import PageHeader from "../components/ui/PageHeader";
 import { Header } from "semantic-ui-react";
 
 const Members = () => {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-   dispatch(getAllMembers())
-  }, [dispatch])
+    dispatch(getAllMembers());
+  }, [dispatch]);
 
-  const {memberList, loadingStatus} = useAppSelector((state) => state.member);
+  const { memberList, loadingStatus } = useAppSelector((state) => state.member);
 
-  if(loadingStatus === LoadingStatus.Loading) return <LoadingSpinner content="Monsters"/>
-  if(!memberList) return <Header>No monsters found</Header>
-  
+  if (loadingStatus === LoadingStatus.Loading)
+    return <LoadingSpinner content="Monsters" />;
+  if (!memberList) return <Header>No monsters found</Header>;
+
   return (
     <Fragment>
       <PageHeader
@@ -28,7 +29,7 @@ const Members = () => {
         buttonColor="blue"
         path="/"
       />
-      <MemberItemGroup memberList={memberList}/>
+      <MemberItemGroup memberList={memberList} />
     </Fragment>
   );
 };

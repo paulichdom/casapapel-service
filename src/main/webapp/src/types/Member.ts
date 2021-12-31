@@ -2,10 +2,10 @@ import { Skill } from "./Skill";
 
 export interface Member {
     id?: number,
-    name: String,
-    sex: String,
-    email: String,
+    name: string,
+    sex: string,
+    email: string,
     skills: Skill[],
-    mainSkill: String,
-    status: String
+    mainSkill?: string,
+    status: string
 } 

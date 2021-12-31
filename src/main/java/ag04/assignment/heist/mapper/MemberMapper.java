@@ -35,7 +35,7 @@ public class MemberMapper {
             Set<MemberSkill> memberSkills = memberSkillMapper.memberSkillDTOsToMemberSkills(memberDTO.getSkills());
             member.setSkills(memberSkills);
 
-            if(memberDTO.getMainSkill()!= null){
+            if(memberDTO.getMainSkill() != null){
                 String mainSkillName = memberDTO.getMainSkill();
                 Optional<Skill> skillOptional =
                         member.getSkills().stream()
@@ -66,7 +66,10 @@ public class MemberMapper {
             memberDTO.setSex(member.getSex().toString());
             memberDTO.setEmail(member.getEmail());
             memberDTO.setStatus(member.getStatus().toString());
-            memberDTO.setMainSkill(member.getMainSkill().getName());
+
+            if(member.getMainSkill() != null) {
+                memberDTO.setMainSkill(member.getMainSkill().getName());
+            }
 
             List<MemberSkillDTO> memberSkillDTOList = memberSkillMapper
                     .memberSkillsToMemberSkillDTOs(member.getSkills());

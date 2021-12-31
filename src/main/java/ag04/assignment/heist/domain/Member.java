@@ -23,7 +23,7 @@ public class Member extends BaseEntity {
     @Column(unique = true)
     private String email;
 
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "member")
+    @OneToMany(mappedBy = "member", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Set<MemberSkill> skills = new HashSet<>();
 
     @ManyToOne

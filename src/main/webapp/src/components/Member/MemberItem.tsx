@@ -2,7 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { Card, Image, Icon } from "semantic-ui-react";
 import { Member } from "../../types/Member";
-import {getMemberImage} from "../../services/ImageService"
+import { getMemberImage } from "../../services/ImageService";
 
 interface PropTypes {
   member: Member;
@@ -20,7 +20,7 @@ const MemberItem = (props: PropTypes) => {
         <Card.Meta>
           <span className="email">{email}</span>
         </Card.Meta>
-        <Card.Description>{`Specialty: ${mainSkill}`}</Card.Description>
+        <Card.Description>{`Specialty: ${mainSkill ? mainSkill : "None"}`}</Card.Description>
       </Card.Content>
       <Card.Content extra>
         {status === "AVAILABLE" && <Icon color="green" name="check circle" />}

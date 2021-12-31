@@ -15,6 +15,7 @@ const MemberItemGroup = (props: PropTypes) => {
       {memberList.map((member) => (
         <MemberItem key={member.id} member={member} />
       ))}
+      
     </Card.Group>
   );
 };

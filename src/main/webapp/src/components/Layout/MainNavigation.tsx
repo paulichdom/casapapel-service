@@ -1,6 +1,6 @@
 import { Fragment } from "react";
 import { NavLink } from "react-router-dom";
-import DropdownMenu from "../../ui/DropdownMenu";
+import DropdownMenu from "../ui/DropdownMenu";
 
 import {
   Segment,

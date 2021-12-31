@@ -50,8 +50,9 @@ public class MemberSkillServiceImpl implements MemberSkillService {
 
     @Transactional
     public void deleteMemberSkill (Long memberId, String skillName) {
-        memberSkillRepository.delete(this.getMemberSkill(
-                memberService.getMemberById(memberId).getId(), skillService.getSkill(skillName).getId()));
+        MemberSkill skillToDelete = this.getMemberSkill(memberId, skillService.getSkill(skillName).getId());
+        memberService.getMemberById(memberId).getSkills().remove(skillToDelete);
+        memberSkillRepository.delete(skillToDelete);
     }
 
     @Transactional
@@ -101,10 +102,15 @@ public class MemberSkillServiceImpl implements MemberSkillService {
 
     public MemberSkillSetDTO getMemberSkillSet(Long member_id) {
         Member member = memberService.getMemberById(member_id);
-        return new MemberSkillSetDTO(
-                memberSkillMapper.memberSkillsToMemberSkillDTOs(member.getSkills()),
-                member.getMainSkill().getName()
-        );
+
+        MemberSkillSetDTO memberSkillSet = new MemberSkillSetDTO();
+        memberSkillSet.setSkills(memberSkillMapper.memberSkillsToMemberSkillDTOs(member.getSkills()));
+
+        if(member.getMainSkill() != null) {
+            memberSkillSet.setMainSkill(member.getMainSkill().getName());
+        }
+
+        return memberSkillSet;
     }
 
     public void levelUpMemberSkills(Heist heist) {

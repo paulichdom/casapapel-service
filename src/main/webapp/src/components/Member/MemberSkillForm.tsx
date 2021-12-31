@@ -1,11 +1,9 @@
-import { FormEvent, useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import PageHeader from "../ui/PageHeader";
 import ErrorMessageContainer from "../ui/ErrorMessageContainer";
 import {
   Form,
   Segment,
-  Radio,
-  CheckboxProps,
   Divider,
   Button,
   Transition,
@@ -15,37 +13,68 @@ import {
 } from "semantic-ui-react";
 
 import "./MemberForm.css";
-import { formSkillsToSkills } from "../../util/SkillMapper";
+import { formSkillsToSkills, skillsToFormSkills } from "../../util/SkillMapper";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
-import { addNewMember } from "../../store/member/memberThunk";
 import { RootState } from "../../store/store";
 import {
   exceptionValidatationMapper,
   filterSkillValidationErrors,
   exceptionResponseMapper,
 } from "../../util/ExceptionMapper";
-import { clearException } from "../../store/member/memberSlice";
+import {
+  clearException,
+} from "../../store/member/memberSlice";
 import { ErrorMessage } from "../../types/Exception";
-import { useNavigate } from "react-router";
+import { MemberSkills } from "../../types/Skill";
+import { skillIsPersisted } from "../../util/Helpers";
+import ConfirmationPortal from "../ui/ConfirmationPortal";
+import {
+  deleteMemberSkill,
+  MemberSkillToDelete,
+  viewMemberSkills,
+  updateMemberSkills,
+  SkillUpdateData,
+} from "../../store/member/memberThunk";
+import { useNavigate } from "react-router-dom";
+import { LoadingStatus } from "../../types/LoadingStatus";
+import LoadingSpinner from "../ui/LoadingSpinner";
 
-const statusOptions = [
-  { key: "a", text: "Available", value: "AVAILABLE" },
-  { key: "r", text: "Retired", value: "RETIRED" },
-  { key: "e", text: "Expired", value: "EXPIRED" },
-  { key: "i", text: "Incarcerated", value: "INCARCERATED" },
-];
+interface PropTypes {
+  memberSkills: MemberSkills;
+}
 
-const MemberForm = () => {
+const MemberForm = (props: PropTypes) => {
   const dispatch = useAppDispatch();
 
-  const buildSkill = (name: string, level: number = 1) => ({ name, level });
+  const { id } = useAppSelector((state) => state.member.memberDetails);
+  const { loadingStatus } = useAppSelector((state) => state.member);
 
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [sex, setSex] = useState("");
-  const [formSkills, setFormSkills] = useState([buildSkill("")]);
-  const [mainSkill, setMainSkill] = useState("");
-  const [status, setStatus] = useState("");
+  const { memberSkills } = props;
+
+  const formMemberSkills = skillsToFormSkills(memberSkills.skills);
+
+  const buildSkill = (name: string, level: number = 1) => ({ name, level });
+  const buildSkillToRemove = (name: string, index: number | null = null) => ({
+    index,
+    name,
+  });
+  const buildSkillToDelete = (
+    skillName: string,
+    memberId: number = id!
+  ): MemberSkillToDelete => ({ memberId, skillName });
+
+  const initialFormSkills =
+    formMemberSkills.length === 0 ? [buildSkill("")] : formMemberSkills;
+  const isLastSkillPersisted = formMemberSkills.length === 0 ? false : true;
+  const mainSkillValue = memberSkills.mainSkill ? memberSkills.mainSkill : "";
+
+  const [formSkills, setFormSkills] = useState(initialFormSkills);
+  const [mainSkill, setMainSkill] = useState(mainSkillValue);
+  const [lastSkillIsPersisted, setLastSkillIsPersisted] =
+    useState(isLastSkillPersisted);
+  const [isConfirmHandlerOpen, setIsConfirmHandlerOpen] = useState(false);
+  const [skillToRemove, setSkillToRemove] = useState(buildSkillToRemove(""));
+  const [skillToDelete, setSkillToDelete] = useState(buildSkillToDelete(""));
 
   let { exception } = useAppSelector((state: RootState) => state.member);
 
@@ -67,41 +96,29 @@ const MemberForm = () => {
 
   const skills = formSkillsToSkills(formSkills);
 
-  const newMember = () => ({
-    name,
-    sex,
-    email,
-    skills,
-    status,
-  });
-
-  const newMemberMain = () => ({
-    name,
-    sex,
-    email,
+  const newMemberSkillsMain = () => ({
     skills,
     mainSkill,
-    status,
   });
+
+  const newMemberSkills = () => ({
+    skills,
+  });
+
+  const skillsUpdateData: SkillUpdateData = {
+    memberId: id!,
+    skillSet: mainSkill === "" ? newMemberSkills() : newMemberSkillsMain(),
+  };
 
   let navigate = useNavigate();
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
-    dispatch(
-      addNewMember(mainSkill === "" ? newMember() : newMemberMain())
-    ).then((response) => {
+    dispatch(updateMemberSkills(skillsUpdateData)).then((response) => {
       if (response.meta.requestStatus === "fulfilled") {
-        navigate("/member/all");
+        navigate(`/member/${id}`);
       }
     });
-  };
-
-  const handleSexSelection: (
-    event: FormEvent<HTMLInputElement>,
-    value: CheckboxProps
-  ) => void = (event, { value }) => {
-    if (value) setSex(value.toString());
   };
 
   const onChangeSkill = (
@@ -121,12 +138,52 @@ const MemberForm = () => {
     });
   };
 
-  const onRemoveSkill = (index: number) => {
+  const removeSkill = (index: number) => {
     setFormSkills((_skills) => {
       const newSkills = [..._skills];
       newSkills.splice(index, 1);
       return newSkills;
     });
+  };
+
+  const openConfirmHandler = () => setIsConfirmHandlerOpen(true);
+
+  const closeConfirmHandlerWithConfirm = () => {
+    console.log(skillToRemove.index);
+
+    if (skillToRemove.index === 0 && formSkills.length === 1) {
+      removeSkill(skillToRemove.index);
+      onAddSkill();
+      setLastSkillIsPersisted(false);
+    } else {
+      removeSkill(skillToRemove.index!);
+    }
+
+    setIsConfirmHandlerOpen(false);
+
+    setTimeout(() => {
+      dispatch(deleteMemberSkill(skillToDelete)).then((response) => {
+        if (response.meta.requestStatus === "fulfilled")
+          dispatch(viewMemberSkills(id!));
+      });
+    }, 1100);
+  };
+
+  const closeConfirmHandlerWithCancel = () => {
+    setIsConfirmHandlerOpen(false);
+  };
+
+  const removeSkillHandler = (index: number, name: string) => {
+    if (skillIsPersisted(memberSkills.skills, name)) {
+      setSkillToRemove({ index: index, name: name });
+      setSkillToDelete((_skill) => {
+        return { memberId: _skill.memberId, skillName: name };
+      });
+      openConfirmHandler();
+      return;
+    }
+
+    removeSkill(index);
   };
 
   useEffect(() => {
@@ -135,74 +192,21 @@ const MemberForm = () => {
     };
   }, [dispatch]);
 
-  const subtitle = "A monster represents a potential member for a heist";
+  const subtitle =
+    "Update skill level, remove existing skill or add a new skill";
+
+  const messageDetails = `This skill is persisted. Do you want to delete the skill permanently?`;
+
+  if (loadingStatus === LoadingStatus.Loading) return <LoadingSpinner />;
 
   return (
     <Segment basic>
       <PageHeader
-        title="Create a new monster"
+        title="Edit monster skills"
         showButton={false}
         subtitle={subtitle}
       />
       <Form onSubmit={handleSubmit}>
-        <Form.Group widths="equal">
-          <Form.Field width="5">
-            <label>Monster name</label>
-            <input
-              placeholder="Name"
-              value={name}
-              onChange={(event) => {
-                setName(event.target.value);
-              }}
-            />
-            {errorMap && errorMap.name && (
-              <ErrorMessageContainer message={errorMap.name} />
-            )}
-            {errorMessage && errorMessage.memberAlreadyExists && (
-              <ErrorMessageContainer
-                message={errorMessage.memberAlreadyExists}
-              />
-            )}
-          </Form.Field>
-          <Form.Field width="5">
-            <label>Email</label>
-            <input
-              placeholder="Email"
-              value={email}
-              onChange={(event) => {
-                setEmail(event.target.value);
-              }}
-            />
-            {errorMap && errorMap.email && (
-              <ErrorMessageContainer message={errorMap.email} />
-            )}
-          </Form.Field>
-        </Form.Group>
-        <Form.Field>
-          <label>Select monster sex{sex && `: ${sex}`}</label>
-        </Form.Field>
-        <Form.Field>
-          <Radio
-            label="Male"
-            name="radioGroup"
-            value="M"
-            checked={sex === "M"}
-            onChange={handleSexSelection}
-          />
-        </Form.Field>
-        <Form.Field>
-          <Radio
-            label="Female"
-            name="radioGroup"
-            value="F"
-            checked={sex === "F"}
-            onChange={handleSexSelection}
-          />
-        </Form.Field>
-        {errorMap && errorMap.sex && (
-          <ErrorMessageContainer message={errorMap.sex} />
-        )}
-        <Divider />
         <Form.Field>
           <label>Skills</label>
         </Form.Field>
@@ -217,6 +221,8 @@ const MemberForm = () => {
                   <Form.Field width="8">
                     <label>Name</label>
                     <input
+                      type="text"
+                      /* readOnly={initialFormSkills.includes(skill)} */
                       placeholder="Skill name"
                       value={skill.name}
                       onChange={(event) => {
@@ -242,7 +248,7 @@ const MemberForm = () => {
                     <Rating rating={skill.level} maxRating={10} size="mini" />
                   </Form.Field>
                   <div>
-                    {formSkills.length > 1 && (
+                    {(formSkills.length > 1 || lastSkillIsPersisted) && (
                       <Popup
                         inverted
                         content={"Remove skill"}
@@ -257,7 +263,9 @@ const MemberForm = () => {
                             circular
                             size="tiny"
                             className="remove"
-                            onClick={() => onRemoveSkill(index)}
+                            onClick={() =>
+                              removeSkillHandler(index, skill.name)
+                            }
                           />
                         }
                       />
@@ -308,23 +316,24 @@ const MemberForm = () => {
               />
             )}
           </Form.Field>
-          <Form.Field width="5">
-            <Form.Select
-              label="Status"
-              options={statusOptions}
-              placeholder="Status"
-              value={status}
-              onChange={(event, { value }) => {
-                if (value) setStatus(value.toString());
-              }}
-            />
-            {errorMap && errorMap.status && (
-              <ErrorMessageContainer message={errorMap.status} />
-            )}
-          </Form.Field>
         </Form.Group>
         <Divider />
-        <Button positive content="Create monster" />
+        <Button positive content="Update skills" />
+        <Button
+          type="button"
+          labelPosition="left"
+          icon="left chevron"
+          content="Back to monster details"
+          color="twitter"
+          onClick={() => navigate(-1)}
+        />
+        <ConfirmationPortal
+          isOpen={isConfirmHandlerOpen}
+          cancelHandler={closeConfirmHandlerWithCancel}
+          confirmHandler={closeConfirmHandlerWithConfirm}
+          messageDetails={messageDetails}
+          transition={{ animation: "fly up", duration: 800 }}
+        />
       </Form>
     </Segment>
   );

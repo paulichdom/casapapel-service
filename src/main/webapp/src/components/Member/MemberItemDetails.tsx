@@ -1,4 +1,3 @@
-import { useState, useEffect } from "react";
 import {
   Button,
   Image,
@@ -8,29 +7,21 @@ import {
   List,
   Rating,
   Segment,
+  Message,
 } from "semantic-ui-react";
 import { Member } from "../../types/Member";
 import { getMemberImage } from "../../services/ImageService";
-import http from "../../util/httpCommon";
 import { Link } from "react-router-dom";
-
-const BACON_IPSUM_URI =
-  "https://baconipsum.com/api/?type=all-meat&sentences=4&start-with-lorem=1";
 
 interface PropTypes {
   member: Member;
+  aboutText: String[];
 }
 
 const MemberItemDetails = (props: PropTypes) => {
-  const [baconIpsum, setBaconIpsum] = useState<String[]>([]);
-
   let { skills, name, email, sex, mainSkill, status, id } = props.member;
 
   const imageUrl = getMemberImage(name);
-
-  useEffect(() => {
-    http.get(BACON_IPSUM_URI).then((response) => setBaconIpsum(response.data));
-  }, []);
 
   const backgroundImage = `https://picsum.photos/id/${id}/765/160`;
 
@@ -91,26 +82,24 @@ const MemberItemDetails = (props: PropTypes) => {
             <Segment padded style={{ borderRadius: "10px" }}>
               <Grid columns={2}>
                 <Grid.Row>
-                  <Grid.Column>
-                    <Header content="Skills" as="h2" />
+                  <Grid.Column verticalAlign="bottom">
+                    <h2>Skills</h2>
                   </Grid.Column>
                   <Grid.Column>
-                    <Button
-                      as={Link}
-                      to="/skills"
-                      floated="right"
-                      icon
-                      circular
-                    >
+                    <Button as={Link} to="skills" floated="right" icon circular>
                       <Icon name="pencil" />
-                    </Button>
-                    <Button floated="right" icon circular>
-                      <Icon name="plus" />
                     </Button>
                   </Grid.Column>
                 </Grid.Row>
               </Grid>
               <List divided relaxed>
+                {skills.length === 0 && (
+                  <Message
+                    info
+                    header={`${name}'s skill list is empty`}
+                    content="Click on the edit icon in the upper right corner to add new skills"
+                  />
+                )}
                 {skills.map((skill) => (
                   <List.Item key={skills.indexOf(skill)}>
                     <Header as="h3" style={{ marginBottom: "10px" }}>
@@ -150,7 +139,7 @@ const MemberItemDetails = (props: PropTypes) => {
               <Header sub dividing>
                 Specialty:
               </Header>
-              {mainSkill.toUpperCase()}
+              {mainSkill ? mainSkill.toUpperCase() : "None"}
               <Header sub dividing>
                 Heists:
               </Header>
@@ -158,7 +147,7 @@ const MemberItemDetails = (props: PropTypes) => {
               <Header sub dividing>
                 About:
               </Header>
-              {baconIpsum}
+              {props.aboutText}
             </Segment>
           </Grid.Column>
         </Grid.Row>
