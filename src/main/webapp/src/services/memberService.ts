@@ -13,7 +13,7 @@ const MemberURI = {
 };
 
 class MemberService {
-  fetchAll() {
+  fetchAllMembers() {
     return http.get(MemberURI.FETCH_ALL);
   }
 

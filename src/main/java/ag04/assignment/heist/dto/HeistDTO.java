@@ -12,6 +12,8 @@ import java.util.List;
 @Data
 public class HeistDTO {
 
+    private Long id;
+
     @NotBlank(message = "{heistdto.name.notblank}")
     private String name;
 

@@ -97,4 +97,9 @@ public class HeistResource {
     public ResponseEntity<HeistOutcomeDTO> viewHeistOutcome(@PathVariable Long heist_id) {
         return new ResponseEntity<>(heistService.getHeistOutcome(heist_id), HttpStatus.OK);
     }
+
+    @GetMapping("/all")
+    public ResponseEntity<List<HeistDTO>> viewAllHeists() {
+        return new ResponseEntity<>(heistService.fetchAllHeists(), HttpStatus.OK);
+    }
 }

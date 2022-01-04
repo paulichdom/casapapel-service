@@ -22,10 +22,11 @@ const Members = () => {
 
   return (
     <Fragment>
+      {/* TODO: Add change to table view functionality */}
       <PageHeader
         title="Monsters"
         showButton={true}
-        buttonTitle="New Monster"
+        buttonTitle="Change view"
         buttonColor="blue"
         path="/"
       />

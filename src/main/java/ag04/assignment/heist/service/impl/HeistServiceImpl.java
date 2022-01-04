@@ -64,6 +64,8 @@ public class HeistServiceImpl implements HeistService {
         this.heistProperties = heistProperties;
     }
 
+    public List<Heist> getAllHeists() { return heistRepository.findAll(); }
+
     @Override
     public Heist getHeistById(Long id) {
         return heistRepository.findOneById(id).orElseThrow(
@@ -333,5 +335,10 @@ public class HeistServiceImpl implements HeistService {
         }
 
         return new HeistOutcomeDTO(heist.getHeistOutcome().toString());
+    }
+
+    @Override
+    public List<HeistDTO> fetchAllHeists() {
+        return heistMapper.heistsToHeistDTOs(this.getAllHeists());
     }
 }

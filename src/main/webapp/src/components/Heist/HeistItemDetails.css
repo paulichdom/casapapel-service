@@ -1,0 +1,10 @@
+.hideIcon {
+  transform: translateX(+35%);
+  transition: all ease-in-out 0.4s;
+  opacity: 0 !important;
+}
+
+.sortable:hover i {
+  transform: translateX(0px);
+  opacity: 0.45 !important;
+}

@@ -34,125 +34,119 @@ const MemberItemDetails = (props: PropTypes) => {
   };
 
   return (
-    <div>
-      <Grid columns={2}>
-        <Grid.Row>
-          <Grid.Column width={11}>
-            <Segment padded style={styleImage}>
-              <Grid columns={2}>
-                <Grid.Row>
-                  <Grid.Column>
-                    <Image
-                      src={imageUrl.href}
-                      circular
-                      bordered
-                      size="small"
-                      style={{ backgroundColor: "white" }}
-                    />
-                  </Grid.Column>
-                </Grid.Row>
-                <Grid.Row>
-                  <Grid.Column>
-                    <Header as="h1">
-                      {name}
-                      <Header.Subheader>Sex: {sex}</Header.Subheader>
-                    </Header>
-                  </Grid.Column>
-                  <Grid.Column style={{ paddingLeft: "6rem" }}>
-                    <List>
-                      <List.Item>
-                        <List.Icon name="users" />
-                        <List.Content>Casa Papel</List.Content>
-                      </List.Item>
-                      <List.Item>
-                        <List.Icon name="marker" />
-                        <List.Content>A State, ST</List.Content>
-                      </List.Item>
-                      <List.Item>
-                        <List.Icon name="mail" />
-                        <List.Content>
-                          <a href={`mailto:${email}`}>{email}</a>
-                        </List.Content>
-                      </List.Item>
-                    </List>
-                  </Grid.Column>
-                </Grid.Row>
-              </Grid>
-            </Segment>
-            <Segment padded style={{ borderRadius: "10px" }}>
-              <Grid columns={2}>
-                <Grid.Row>
-                  <Grid.Column verticalAlign="bottom">
-                    <h2>Skills</h2>
-                  </Grid.Column>
-                  <Grid.Column>
-                    <Button as={Link} to="skills" floated="right" icon circular>
-                      <Icon name="pencil" />
-                    </Button>
-                  </Grid.Column>
-                </Grid.Row>
-              </Grid>
-              <List divided relaxed>
-                {skills.length === 0 && (
-                  <Message
-                    info
-                    header={`${name}'s skill list is empty`}
-                    content="Click on the edit icon in the upper right corner to add new skills"
+    <Grid columns={2}>
+      <Grid.Row>
+        <Grid.Column width={11}>
+          <Segment padded style={styleImage}>
+            <Grid columns={2}>
+              <Grid.Row>
+                <Grid.Column>
+                  <Image
+                    src={imageUrl.href}
+                    circular
+                    bordered
+                    size="small"
+                    style={{ backgroundColor: "white" }}
                   />
-                )}
-                {skills.map((skill) => (
-                  <List.Item key={skills.indexOf(skill)}>
-                    <Header as="h3" style={{ marginBottom: "10px" }}>
-                      {skill.name}
-                    </Header>
-                    <Rating
-                      rating={skill.level.length}
-                      maxRating={10}
-                      disabled
-                      icon="star"
-                      style={{ marginRight: "10px" }}
-                    />{" "}
-                    {`${skill.level.length}/10`}
-                  </List.Item>
-                ))}
-              </List>
-            </Segment>
-          </Grid.Column>
-          <Grid.Column width={5}>
-            <Segment padded style={{ borderRadius: "10px" }} textAlign="left">
-              <Header sub dividing>
-                Status:
-              </Header>
-              {status === "AVAILABLE" && (
-                <Icon color="green" name="check circle" />
+                </Grid.Column>
+              </Grid.Row>
+              <Grid.Row>
+                <Grid.Column>
+                  <Header as="h1">
+                    {name}
+                    <Header.Subheader>Sex: {sex}</Header.Subheader>
+                  </Header>
+                </Grid.Column>
+                <Grid.Column style={{ paddingLeft: "6rem" }}>
+                  <List>
+                    <List.Item>
+                      <List.Icon name="users" />
+                      <List.Content>Casa Papel</List.Content>
+                    </List.Item>
+                    <List.Item>
+                      <List.Icon name="marker" />
+                      <List.Content>A State, ST</List.Content>
+                    </List.Item>
+                    <List.Item>
+                      <List.Icon name="mail" />
+                      <List.Content>
+                        <a href={`mailto:${email}`}>{email}</a>
+                      </List.Content>
+                    </List.Item>
+                  </List>
+                </Grid.Column>
+              </Grid.Row>
+            </Grid>
+          </Segment>
+          <Segment padded style={{ borderRadius: "10px" }}>
+            <Grid columns={2}>
+              <Grid.Row>
+                <Grid.Column verticalAlign="bottom">
+                  <h2>Skills</h2>
+                </Grid.Column>
+                <Grid.Column>
+                  <Button as={Link} to="skills" floated="right" icon circular>
+                    <Icon name="pencil" />
+                  </Button>
+                </Grid.Column>
+              </Grid.Row>
+            </Grid>
+            <List divided relaxed>
+              {skills.length === 0 && (
+                <Message
+                  info
+                  header={`${name}'s skill list is empty`}
+                  content="Click on the edit icon in the upper right corner to add new skills"
+                />
               )}
-              {status === "INCARCERATED" && (
-                <Icon color="red" name="times circle" />
-              )}
-              {status === "EXPIRED" && (
-                <Icon color="grey" name="minus circle" />
-              )}
-              {status === "REDIRED" && (
-                <Icon color="orange" name="stop circle" />
-              )}
-              {status}
-              <Header sub dividing>
-                Specialty:
-              </Header>
-              {mainSkill ? mainSkill.toUpperCase() : "None"}
-              <Header sub dividing>
-                Heists:
-              </Header>
-              None yet
-              <Header sub dividing>
-                About:
-              </Header>
-              {props.aboutText}
-            </Segment>
-          </Grid.Column>
-        </Grid.Row>
-      </Grid>
-    </div>
+              {skills.map((skill) => (
+                <List.Item key={skills.indexOf(skill)}>
+                  <Header as="h3" style={{ marginBottom: "10px" }}>
+                    {skill.name}
+                  </Header>
+                  <Rating
+                    rating={skill.level.length}
+                    maxRating={10}
+                    disabled
+                    icon="star"
+                    style={{ marginRight: "10px" }}
+                  />{" "}
+                  {`${skill.level.length}/10`}
+                </List.Item>
+              ))}
+            </List>
+          </Segment>
+        </Grid.Column>
+        <Grid.Column width={5}>
+          <Segment padded style={{ borderRadius: "10px" }} textAlign="left">
+            <Header sub dividing>
+              Status:
+            </Header>
+            {status === "AVAILABLE" && (
+              <Icon color="green" name="check circle" />
+            )}
+            {status === "INCARCERATED" && (
+              <Icon color="red" name="times circle" />
+            )}
+            {status === "EXPIRED" && <Icon color="grey" name="minus circle" />}
+            {status === "REDIRED" && <Icon color="orange" name="stop circle" />}
+            {status}
+            <Header sub dividing>
+              Specialty:
+            </Header>
+            {mainSkill ? mainSkill.toUpperCase() : "None"}
+            <Header sub dividing>
+              Heists:
+            </Header>
+            None yet
+            <Header sub dividing>
+              About:
+            </Header>
+            {props.aboutText}
+          </Segment>
+        </Grid.Column>
+      </Grid.Row>
+    </Grid>
   );
 };
 

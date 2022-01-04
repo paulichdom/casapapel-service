@@ -19,4 +19,5 @@ public interface HeistService {
     void startHeist (Long heist_id);
     void finishHeist (Long heist_id);
     HeistOutcomeDTO getHeistOutcome(Long heist_id);
+    List<HeistDTO> fetchAllHeists();
 }

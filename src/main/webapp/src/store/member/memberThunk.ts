@@ -9,7 +9,7 @@ import { MemberSkills } from "../../types/Skill";
 export const getAllMembers = createAsyncThunk<Member[]>(
   "member/all",
   async () => {
-    const response = await MemberService.fetchAll();
+    const response = await MemberService.fetchAllMembers();
     return response.data;
   }
 );

@@ -11,6 +11,7 @@ import {
   Image,
   Search,
   MenuItem,
+  Label,
 } from "semantic-ui-react";
 
 const MainNavigation = () => {
@@ -25,12 +26,13 @@ const MainNavigation = () => {
       <MenuItem as={NavLink} to="/member/all">
         <Header inverted>Monsters</Header>
       </MenuItem>
-      <MenuItem>
+      <MenuItem as={NavLink} to="/heist/all">
         <Header inverted>Heists</Header>
       </MenuItem>
       <Menu.Menu position="right">
         <Menu.Item>
           <Icon name="bell outline" size="large" inverted />
+          {/* <Label color="red" floating circular size="tiny" content={1}/> */}
         </Menu.Item>
         <DropdownMenu />
         <Menu.Item>

@@ -9,8 +9,12 @@ const DropdownMenu = () => {
   return (
     <Dropdown trigger={plusIcon} icon={carretDownIcon} pointing="top" item>
       <Dropdown.Menu>
-        <Dropdown.Item as={NavLink} to="/member/new">New Monster</Dropdown.Item>
-        <Dropdown.Item>New Heist</Dropdown.Item>
+        <Dropdown.Item as={NavLink} to="/member/new">
+          New Monster
+        </Dropdown.Item>
+        <Dropdown.Item as={NavLink} to="/heist/new">
+          New Heist
+        </Dropdown.Item>
       </Dropdown.Menu>
     </Dropdown>
   );

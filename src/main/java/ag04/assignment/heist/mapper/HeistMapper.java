@@ -5,7 +5,9 @@ import ag04.assignment.heist.domain.HeistSkill;
 import ag04.assignment.heist.dto.HeistDTO;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Component
 public class HeistMapper {
@@ -39,6 +41,7 @@ public class HeistMapper {
             return null;
         } else {
             HeistDTO heistDTO = new HeistDTO();
+            heistDTO.setId(heist.getId());
             heistDTO.setName(heist.getName());
             heistDTO.setLocation(heist.getLocation());
             heistDTO.setStartDate(heist.getStartDate());
@@ -47,5 +50,9 @@ public class HeistMapper {
             heistDTO.setSkills(heistSkillMapper.heistSkillsToHeistSkillDTOs(heist.getSkills()));
             return heistDTO;
         }
+    }
+
+    public List<HeistDTO> heistsToHeistDTOs(List<Heist> heistList) {
+        return heistList.stream().map(this::heistToHeistDTO).collect(Collectors.toList());
     }
 }
