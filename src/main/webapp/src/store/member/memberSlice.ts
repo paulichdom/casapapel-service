@@ -85,16 +85,16 @@ export const memberSlice = createSlice({
       // POST -> Add a new member
       .addCase(addNewMember.pending, (state) => {
         state.loadingStatus = LoadingStatus.Loading;
-        toast.loading("Creating monster...", { toastId: "t01add" });
+        toast.loading("Creating monster...", { toastId: "t01memberAdd" });
       })
       .addCase(addNewMember.fulfilled, (state) => {
         state.loadingStatus = LoadingStatus.Succeeded;
-        toast.dismiss("t01add");
+        toast.dismiss("t01memberAdd");
         toast.success("New monster successfully created");
       })
       .addCase(addNewMember.rejected, (state, { payload }) => {
         state.loadingStatus = LoadingStatus.Failed;
-        toast.dismiss("t01add");
+        toast.dismiss("t01memberAdd");
         if (payload) state.exception = payload;
       })
       // GET -> View member details
@@ -124,31 +124,31 @@ export const memberSlice = createSlice({
       // DELETE -> delete member skill
       .addCase(deleteMemberSkill.pending, (state) => {
         state.loadingStatus = LoadingStatus.Loading;
-        toast.loading("Deleteing skill...", { toastId: "t02delete" });
+        toast.loading("Deleteing skill...", { toastId: "t02memberDelete" });
       })
       .addCase(deleteMemberSkill.fulfilled, (state) => {
         state.loadingStatus = LoadingStatus.Succeeded;
-        toast.dismiss("t02delete");
+        toast.dismiss("t02memberDelete");
         toast.success("Skill deleted successfully");
       })
       .addCase(deleteMemberSkill.rejected, (state, { payload }) => {
         state.loadingStatus = LoadingStatus.Failed;
-        toast.dismiss("t02delete");
+        toast.dismiss("t02memberDelete");
         if (payload) state.exception = payload;
       })
       // PUT -> Update member skills
       .addCase(updateMemberSkills.pending, (state) => {
         state.loadingStatus = LoadingStatus.Loading;
-        toast.loading("Updating skills...", { toastId: "t03put" });
+        toast.loading("Updating skills...", { toastId: "t03memberPut" });
       })
       .addCase(updateMemberSkills.fulfilled, (state) => {
         state.loadingStatus = LoadingStatus.Succeeded;
-        toast.dismiss("t03put");
+        toast.dismiss("t03memberPut");
         toast.success("Skills updated successfully");
       })
       .addCase(updateMemberSkills.rejected, (state, { payload }) => {
         state.loadingStatus = LoadingStatus.Failed;
-        toast.dismiss("t03put");
+        toast.dismiss("t03memberPut");
         if (payload) state.exception = payload;
       });
   },

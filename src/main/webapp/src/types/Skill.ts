@@ -6,7 +6,8 @@ export interface Skill {
 
 export interface FormSkill {
     name: string,
-    level: number
+    level: number,
+    members?: number
 }
 
 export interface MemberSkills {

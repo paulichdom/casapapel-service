@@ -2,6 +2,8 @@ import { DateTime } from "luxon";
 import { Link } from "react-router-dom";
 import { Grid, Icon, Item, Label, List } from "semantic-ui-react";
 import { Heist } from "../../types/Heist";
+import LinePlaceholder from "../ui/LinePlaceholder";
+import HeistStatusItem from "./HeistStatusItem";
 
 interface PropTypes {
   heist: Heist;
@@ -29,28 +31,10 @@ const HeistItem = ({ description, heist }: PropTypes) => {
                   <Icon name="map marker alternate" /> {location}
                 </span>
               </Item.Meta>
+              {!description && <LinePlaceholder />}
               <Item.Description>{description}</Item.Description>
               <Item.Extra>
-                {heistStatus === "READY" && (
-                  <Label
-                    icon="check circle"
-                    content={heistStatus}
-                    color="green"
-                  />
-                )}
-                {heistStatus === "IN_PROGRESS" && (
-                  <Label
-                    icon="clock outline"
-                    content={heistStatus.replace("_", " ")}
-                    color="yellow"
-                  />
-                )}
-                {heistStatus === "PLANNING" && (
-                  <Label icon="cogs" content={heistStatus} />
-                )}
-                {heistStatus === "FINISHED" && (
-                  <Label icon="flag" content={heistStatus} color="blue" />
-                )}
+                <HeistStatusItem heistStatus={heistStatus} />
               </Item.Extra>
             </Grid.Column>
             <Grid.Column width={5}>

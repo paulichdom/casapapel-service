@@ -3,7 +3,10 @@ import { useParams } from "react-router-dom";
 import { Message } from "semantic-ui-react";
 import HeistItemDetails from "../components/Heist/HeistItemDetails";
 import LoadingSpinner from "../components/ui/LoadingSpinner";
-import { viewHeistDetails } from "../store/heist/heistThunk";
+import {
+  viewHeistDetails,
+  viewHeistParticipants,
+} from "../store/heist/heistThunk";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { LoadingStatus } from "../types/LoadingStatus";
 
@@ -14,9 +17,11 @@ const HeistDetails = () => {
 
   useEffect(() => {
     dispatch(viewHeistDetails(+heistId!));
+    // TODO: call this dispatch conditionally
+    dispatch(viewHeistParticipants(+heistId!));
   }, [dispatch, heistId]);
 
-  const { heistDetails, loadingStatus } = useAppSelector(
+  const { heistDetails, heistParticipants, loadingStatus } = useAppSelector(
     (state) => state.heist
   );
 
@@ -32,7 +37,12 @@ const HeistDetails = () => {
       />
     );
 
-  return <HeistItemDetails heistDetails={heistDetails}/>;
+  return (
+    <HeistItemDetails
+      heistDetails={heistDetails}
+      heistParticipants={heistParticipants}
+    />
+  );
 };
 
 export default HeistDetails;

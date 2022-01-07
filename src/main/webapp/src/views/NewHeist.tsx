@@ -1,8 +1,8 @@
 import React from "react";
-import PageHeader from "../components/ui/PageHeader";
+import HeistForm from "../components/Heist/HeistForm";
 
 const NewHeist = () => {
-  return <PageHeader title="Create a new heist" showButton={false} />;
+  return <HeistForm />;
 };
 
 export default NewHeist;

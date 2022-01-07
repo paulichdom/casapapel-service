@@ -8,3 +8,8 @@
   transform: translateX(0px);
   opacity: 0.45 !important;
 }
+
+i.green.check.large {
+  margin-top: 9px;
+  margin-right: 12px;
+}

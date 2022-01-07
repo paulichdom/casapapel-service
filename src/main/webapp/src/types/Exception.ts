@@ -18,7 +18,8 @@ export interface ErrorContainer {
 }
 
 export interface ErrorMessage {
-  memberAlreadyExists:string
+  memberAlreadyExists?:string
   doubleSkill: string,
-  mainSkillReference: string,
+  mainSkillReference?: string,
+  heistAlreadyExists?: string
 }

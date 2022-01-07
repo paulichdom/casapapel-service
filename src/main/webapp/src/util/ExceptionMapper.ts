@@ -43,6 +43,7 @@ export const exceptionResponseMapper = (
     memberAlreadyExists: "",
     doubleSkill: "",
     mainSkillReference: "",
+    heistAlreadyExists: "",
   };
 
   switch (response.message) {
@@ -52,7 +53,13 @@ export const exceptionResponseMapper = (
     case ExceptionMessages.BAD_MAIN_SKILL_REFERENCE:
       errorMesage.mainSkillReference = response.message;
       break;
-    case ExceptionMessages.DOUBLE_SKILL_NOT_ALLOWED:
+    case ExceptionMessages.DOUBLE_SKILL_NOT_ALLOWED_MEMBER:
+      errorMesage.doubleSkill = response.message;
+      break;
+    case ExceptionMessages.HEIST_ALREADY_EXISTS:
+      errorMesage.heistAlreadyExists = response.message;
+      break;
+    case ExceptionMessages.DOUBLE_SKILL_NOT_ALLOWED_HEIST:
       errorMesage.doubleSkill = response.message;
       break;
     default:

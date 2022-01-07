@@ -14,6 +14,7 @@ import PageNotFound from "./views/PageNotFound";
 import HeistList from "./views/HeistList";
 import NewHeist from "./views/NewHeist";
 import HeistDetails from "./views/HeistDetails";
+import HeistSkills from "./views/HeistSkills";
 
 function App() {
   return (
@@ -34,6 +35,7 @@ function App() {
             <Route path="all" element={<HeistList />} />
             <Route path=":heistId">
               <Route path="" element={<HeistDetails />} />
+              <Route path="skills" element={<HeistSkills />} />
             </Route>
           </Route>
           <Route path="*" element={<PageNotFound />} />
