@@ -59,16 +59,16 @@ export const deleteMemberSkill = createAsyncThunk<
 });
 
 // PUT -> Update member skills
-export type SkillUpdateData = {
+export type MemberSkillUpdateData = {
   skillSet: MemberSkills;
   memberId: number;
 };
 
 export const updateMemberSkills = createAsyncThunk<
   void,
-  SkillUpdateData,
+  MemberSkillUpdateData,
   { rejectValue: RestApiException }
->("member/update/skills", async (data: SkillUpdateData, thunkApi) => {
+>("member/update/skills", async (data, thunkApi) => {
   return handleRequest(
     MemberService.updateMemberSkills(data.memberId, data.skillSet),
     thunkApi

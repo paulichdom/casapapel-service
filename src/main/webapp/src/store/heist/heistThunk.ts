@@ -3,7 +3,7 @@ import HeistService from "../../services/heistService";
 import { RestApiException } from "../../types/Exception";
 import { Heist } from "../../types/Heist";
 import { Member } from "../../types/Member";
-import { Skill } from "../../types/Skill";
+import { HeistSkills, Skill } from "../../types/Skill";
 import { handleRequest } from "../../util/RequestHandler";
 
 // GET -> View all heists
@@ -61,3 +61,17 @@ export const viewHeistSkills = createAsyncThunk<
 >("heist/skills", async (heistId: number, thunkApi) => {
   return handleRequest(HeistService.viewHeistSkills(heistId), thunkApi);
 });
+
+// PATCH -> Update heist required skills
+export type HeistSkillUpdateData = {
+  heistId: number;
+  skills: HeistSkills;
+};
+
+export const updateHeistSkills = createAsyncThunk<
+void,
+HeistSkillUpdateData,
+{rejectValue: RestApiException}
+>("heist/skills/update", async(data, thunkApi) => {
+  return handleRequest(HeistService.updateHeistSkills(data.heistId, data.skills), thunkApi)
+})

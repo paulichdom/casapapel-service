@@ -8,6 +8,7 @@ import {
   viewHeistParticipants,
   addNewHeist,
   viewHeistSkills,
+  updateHeistSkills,
 } from "./heistThunk";
 import { RestApiException } from "../../types/Exception";
 import { Member } from "../../types/Member";
@@ -140,6 +141,21 @@ export const heistSlice = createSlice({
       })
       .addCase(viewHeistSkills.rejected, (state, { payload }) => {
         state.loadingStatus = LoadingStatus.Failed;
+        if (payload) state.exception = payload;
+      })
+      // Patch -> Update heist required skills
+      .addCase(updateHeistSkills.pending, (state) => {
+        state.loadingStatus = LoadingStatus.Loading;
+        toast.loading("Updating skills...", { toastId: "t02skillsUpdate" });
+      })
+      .addCase(updateHeistSkills.fulfilled, (state) => {
+        state.loadingStatus = LoadingStatus.Succeeded;
+        toast.dismiss("t02skillsUpdate");
+        toast.success("Skills updated successfully");
+      })
+      .addCase(updateHeistSkills.rejected, (state, { payload }) => {
+        state.loadingStatus = LoadingStatus.Failed;
+        toast.dismiss("t02skillsUpdate");
         if (payload) state.exception = payload;
       });
   },

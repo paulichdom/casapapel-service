@@ -14,7 +14,7 @@ import {
 } from "semantic-ui-react";
 
 import "./HeistSkillForm.css";
-import { formSkillsToSkills } from "../../util/SkillMapper";
+import { formSkillsToSkills, skillsToFormSkills } from "../../util/SkillMapper";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import { RootState } from "../../store/store";
 import {
@@ -27,6 +27,13 @@ import { ErrorMessage } from "../../types/Exception";
 import { useNavigate } from "react-router";
 import "react-datetime/css/react-datetime.css";
 import { Skill } from "../../types/Skill";
+import LoadingSpinner from "../ui/LoadingSpinner";
+import { LoadingStatus } from "../../types/LoadingStatus";
+import { skillIsPersisted } from "../../util/Helpers";
+import {
+  HeistSkillUpdateData,
+  updateHeistSkills,
+} from "../../store/heist/heistThunk";
 
 interface PropTypes {
   heistSkills: Skill[];
@@ -35,15 +42,21 @@ interface PropTypes {
 const HeistSkillForm = ({ heistSkills }: PropTypes) => {
   const dispatch = useAppDispatch();
 
+  const { id } = useAppSelector((state) => state.heist.heistDetails);
+  const { loadingStatus } = useAppSelector((state) => state.heist);
+
   const buildSkill = (
     name: string,
     level: number = 1,
     members: number = 1
   ) => ({ name, level, members });
 
-  // TODO: skillToFormskill and set initial skills
+  const formHeistSkills = skillsToFormSkills(heistSkills);
 
-  const [formSkills, setFormSkills] = useState([buildSkill("")]);
+  const initialFormSkills =
+    formHeistSkills.length === 0 ? [buildSkill("")] : formHeistSkills;
+
+  const [formSkills, setFormSkills] = useState(initialFormSkills);
 
   let { exception } = useAppSelector((state: RootState) => state.heist);
 
@@ -63,15 +76,24 @@ const HeistSkillForm = ({ heistSkills }: PropTypes) => {
 
   const skills = formSkillsToSkills(formSkills);
 
+  const updatedHeistSkills = () => ({
+    skills,
+  });
+
+  const skillsUpdateData: HeistSkillUpdateData = {
+    heistId: id!,
+    skills: updatedHeistSkills(),
+  };
+
   let navigate = useNavigate();
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
-    /* dispatch(addNewHeist(newHeist())).then((response) => {
+    dispatch(updateHeistSkills(skillsUpdateData)).then((response) => {
       if (response.meta.requestStatus === "fulfilled") {
-        navigate("/heist/all");
+        navigate(-1);
       }
-    }); */
+    });
   };
 
   const onChangeSkill = (
@@ -102,7 +124,7 @@ const HeistSkillForm = ({ heistSkills }: PropTypes) => {
   const onIncreaseMemberCount = (index: number) => {
     setFormSkills((_skills) => {
       const copySkills = [..._skills];
-      const members = copySkills[index].members + 1;
+      const members = copySkills[index].members! + 1;
       copySkills[index] = { ...copySkills[index], members };
       return copySkills;
     });
@@ -111,7 +133,7 @@ const HeistSkillForm = ({ heistSkills }: PropTypes) => {
   const onDecreaseMemberCount = (index: number) => {
     setFormSkills((_skills) => {
       const copySkills = [..._skills];
-      const members = copySkills[index].members - 1;
+      const members = copySkills[index].members! - 1;
       copySkills[index] = { ...copySkills[index], members };
       return copySkills;
     });
@@ -123,9 +145,17 @@ const HeistSkillForm = ({ heistSkills }: PropTypes) => {
     };
   }, [dispatch]);
 
+  const subtitle = "Update required monster number or add a new skill";
+
+  if (loadingStatus === LoadingStatus.Loading) return <LoadingSpinner />;
+
   return (
     <Segment basic>
-      <PageHeader title="Edit heist skills" showButton={false} />
+      <PageHeader
+        title="Edit heist skills"
+        showButton={false}
+        subtitle={subtitle}
+      />
       <Form onSubmit={handleSubmit}>
         <Form.Field>
           <label>Skills</label>
@@ -141,6 +171,10 @@ const HeistSkillForm = ({ heistSkills }: PropTypes) => {
                   <Form.Field width="8">
                     <label>Name</label>
                     <input
+                      readOnly={
+                        skillIsPersisted(heistSkills, skill.name) &&
+                        index <= heistSkills.length - 1
+                      }
                       placeholder="Skill name"
                       value={skill.name}
                       onChange={(event) => {
@@ -160,7 +194,7 @@ const HeistSkillForm = ({ heistSkills }: PropTypes) => {
                         onClick={() => {
                           onIncreaseMemberCount(index);
                         }}
-                        disabled={skill.members > 98}
+                        disabled={skill.members! > 98}
                       >
                         <Icon name="caret up" />
                       </Button>
@@ -171,7 +205,7 @@ const HeistSkillForm = ({ heistSkills }: PropTypes) => {
                         type="button"
                         icon
                         onClick={() => onDecreaseMemberCount(index)}
-                        disabled={skill.members < 2}
+                        disabled={skill.members! < 2}
                       >
                         <Icon name="caret down" />
                       </Button>
@@ -180,6 +214,10 @@ const HeistSkillForm = ({ heistSkills }: PropTypes) => {
                   <Form.Field width="4" className="level">
                     <label>Level: {skill.level}</label>
                     <input
+                      disabled={
+                        skillIsPersisted(heistSkills, skill.name) &&
+                        index <= heistSkills.length - 1
+                      }
                       type="range"
                       min={1}
                       max={10}
@@ -189,29 +227,35 @@ const HeistSkillForm = ({ heistSkills }: PropTypes) => {
                       }}
                     />
                     <br />
-                    <Rating rating={skill.level} maxRating={10} size="mini" />
+                    <Rating
+                      rating={skill.level}
+                      maxRating={10}
+                      size="mini"
+                      disabled
+                    />
                   </Form.Field>
                   <div>
-                    {formSkills.length > 1 && (
-                      <Popup
-                        inverted
-                        content={"Remove skill"}
-                        position="top center"
-                        size="small"
-                        trigger={
-                          <Button
-                            type="button"
-                            compact
-                            basic
-                            icon="remove"
-                            circular
-                            size="tiny"
-                            className="remove"
-                            onClick={() => onRemoveSkill(index)}
-                          />
-                        }
-                      />
-                    )}
+                    {formSkills.length > 1 &&
+                      !skillIsPersisted(heistSkills, skill.name) && (
+                        <Popup
+                          inverted
+                          content={"Remove skill"}
+                          position="top center"
+                          size="small"
+                          trigger={
+                            <Button
+                              type="button"
+                              compact
+                              basic
+                              icon="remove"
+                              circular
+                              size="tiny"
+                              className="remove"
+                              onClick={() => onRemoveSkill(index)}
+                            />
+                          }
+                        />
+                      )}
                     {formSkills.length - 1 === index && (
                       <Popup
                         inverted
@@ -239,8 +283,15 @@ const HeistSkillForm = ({ heistSkills }: PropTypes) => {
           ))}
           <Divider />
         </Transition.Group>
-        <Divider />
-        <Button positive content="Create heist" />
+        <Button positive content="Update skills" />
+        <Button
+          type="button"
+          labelPosition="left"
+          icon="left chevron"
+          content="Back to heist details"
+          color="twitter"
+          onClick={() => navigate(-1)}
+        />
       </Form>
     </Segment>
   );

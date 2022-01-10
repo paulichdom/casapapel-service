@@ -14,3 +14,7 @@ export interface MemberSkills {
     skills: Skill[],
     mainSkill?: string
 }
+
+export interface HeistSkills {
+    skills: Skill[]
+}

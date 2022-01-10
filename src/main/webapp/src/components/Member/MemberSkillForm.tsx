@@ -21,9 +21,7 @@ import {
   filterSkillValidationErrors,
   exceptionResponseMapper,
 } from "../../util/ExceptionMapper";
-import {
-  clearException,
-} from "../../store/member/memberSlice";
+import { clearException } from "../../store/member/memberSlice";
 import { ErrorMessage } from "../../types/Exception";
 import { MemberSkills } from "../../types/Skill";
 import { skillIsPersisted } from "../../util/Helpers";
@@ -33,7 +31,7 @@ import {
   MemberSkillToDelete,
   viewMemberSkills,
   updateMemberSkills,
-  SkillUpdateData,
+  MemberSkillUpdateData,
 } from "../../store/member/memberThunk";
 import { useNavigate } from "react-router-dom";
 import { LoadingStatus } from "../../types/LoadingStatus";
@@ -105,7 +103,7 @@ const MemberForm = (props: PropTypes) => {
     skills,
   });
 
-  const skillsUpdateData: SkillUpdateData = {
+  const skillsUpdateData: MemberSkillUpdateData = {
     memberId: id!,
     skillSet: mainSkill === "" ? newMemberSkills() : newMemberSkillsMain(),
   };
@@ -149,8 +147,6 @@ const MemberForm = (props: PropTypes) => {
   const openConfirmHandler = () => setIsConfirmHandlerOpen(true);
 
   const closeConfirmHandlerWithConfirm = () => {
-    console.log(skillToRemove.index);
-
     if (skillToRemove.index === 0 && formSkills.length === 1) {
       removeSkill(skillToRemove.index);
       onAddSkill();
@@ -222,7 +218,10 @@ const MemberForm = (props: PropTypes) => {
                     <label>Name</label>
                     <input
                       type="text"
-                      /* readOnly={initialFormSkills.includes(skill)} */
+                      readOnly={
+                        skillIsPersisted(memberSkills.skills, skill.name) &&
+                        index <= memberSkills.skills.length - 1
+                      }
                       placeholder="Skill name"
                       value={skill.name}
                       onChange={(event) => {
@@ -245,7 +244,12 @@ const MemberForm = (props: PropTypes) => {
                       }}
                     />
                     <br />
-                    <Rating rating={skill.level} maxRating={10} size="mini" />
+                    <Rating
+                      rating={skill.level}
+                      maxRating={10}
+                      size="mini"
+                      disabled
+                    />
                   </Form.Field>
                   <div>
                     {(formSkills.length > 1 || lastSkillIsPersisted) && (

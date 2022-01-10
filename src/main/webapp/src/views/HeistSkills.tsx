@@ -16,7 +16,6 @@ const HeistSkills = () => {
   }, [dispatch, heistId]);
 
   const { heistSkills, loadingStatus } = useAppSelector((state) => state.heist);
-  console.log(heistSkills);
 
   if (loadingStatus === LoadingStatus.Loading)
     return <LoadingSpinner content="heist skills" />;
