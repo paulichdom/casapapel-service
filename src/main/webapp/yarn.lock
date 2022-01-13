@@ -6991,6 +6991,11 @@ react-app-polyfill@^3.0.0:
     regenerator-runtime "^0.13.9"
     whatwg-fetch "^3.6.2"
 
+react-countdown-circle-timer@^3.0.2:
+  version "3.0.2"
+  resolved "https://registry.yarnpkg.com/react-countdown-circle-timer/-/react-countdown-circle-timer-3.0.2.tgz#3a24bc84e8d24882e09689e10b27bfe7d2888970"
+  integrity sha512-r5F5idMoMx7cbOaYSn53zLPKVH2MUkagKR82LcfDw1ZjzJTF94oSboN0plMxeb77gQ1NquORQMI9EcXuZwFWMw==
+
 react-datetime@^3.1.1:
   version "3.1.1"
   resolved "https://registry.yarnpkg.com/react-datetime/-/react-datetime-3.1.1.tgz#adc346efda47653cfff9259c979f03f56106e48c"

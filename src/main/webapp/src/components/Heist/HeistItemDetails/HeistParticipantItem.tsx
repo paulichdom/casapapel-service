@@ -1,7 +1,7 @@
 import React from "react";
 import { List, Image } from "semantic-ui-react";
-import { getMemberImage } from "../../services/ImageService";
-import { Member } from "../../types/Member";
+import { getMemberImage } from "../../../services/ImageService"
+import { Member } from "../../../types/Member"
 
 interface PropTypes {
   participant: Member;

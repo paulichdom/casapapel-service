@@ -1,5 +1,5 @@
 import { DateTime } from "luxon";
-import React, { SyntheticEvent, useEffect, useState } from "react";
+import { SyntheticEvent, useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 import {
@@ -8,7 +8,6 @@ import {
   Grid,
   Header,
   Icon,
-  Label,
   List,
   Message,
   Rating,
@@ -16,18 +15,30 @@ import {
   Popup,
   ListItemProps,
 } from "semantic-ui-react";
-import { Heist } from "../../types/Heist";
-import { viewEligibleMembers } from "../../store/heist/heistThunk";
+import { Heist } from "../../../types/Heist";
+import {
+  HeistParticipantsData,
+  viewEligibleMembers,
+  confirmHeistParticipants,
+} from "../../../store/heist/heistThunk";
 import {
   clearEligibleMembers,
-  clearHeistParticipants,
-} from "../../store/heist/heistSlice";
+  clearException,
+  clearHeistOutcome,
+} from "../../../store/heist/heistSlice";
 
-import { useAppSelector } from "../../store/hooks";
+import { useAppSelector } from "../../../store/hooks";
 import EligibleMemberItem from "./EligibleMemberItem";
-import { Member } from "../../types/Member";
+import { Member } from "../../../types/Member";
 import HeistParticipantItem from "./HeistParticipantItem";
-import HeistStatusItem from "./HeistStatusItem";
+import HeistStatusItem from "../HeistStatusItem";
+import { RootState } from "../../../store/store";
+import { ErrorMessage } from "../../../types/Exception";
+import { exceptionResponseMapper } from "../../../util/ExceptionMapper";
+import ErrorMessageContainer from "../../ui/ErrorMessageContainer";
+import HeistTimeDetails from "./HeistTimeDetails";
+import SelectedMembersItem from "./SelectedMembersItem";
+import HeistCountdownTimer from "./HeistCountdownTimer";
 
 interface PropTypes {
   heistDetails: Heist;
@@ -46,7 +57,17 @@ const HeistItemDetails = ({ heistDetails, heistParticipants }: PropTypes) => {
     dispatch(viewEligibleMembers(id!));
   };
 
-  const { eligibleMembers } = useAppSelector((state) => state.heist);
+  const { eligibleMembers, heistOutcome } = useAppSelector(
+    (state: RootState) => state.heist
+  );
+
+  let { exception } = useAppSelector((state: RootState) => state.heist);
+
+  let errorMessage: ErrorMessage = {
+    invalidHeistStatus: "",
+  };
+
+  errorMessage = exceptionResponseMapper(exception);
 
   const onSelectMembers = (event: SyntheticEvent, data: ListItemProps) => {
     const selectedMember = event.currentTarget.textContent;
@@ -69,6 +90,19 @@ const HeistItemDetails = ({ heistDetails, heistParticipants }: PropTypes) => {
     }
   };
 
+  const selectedHeistParticipants = () => ({
+    members: selectedMembers,
+  });
+
+  const participantsData: HeistParticipantsData = {
+    heistId: id!,
+    members: selectedHeistParticipants(),
+  };
+
+  const onConfirmHeistParticipants = () => {
+    dispatch(confirmHeistParticipants(participantsData));
+  };
+
   const eligibleMembersItemList = eligibleMembers.map((member) => (
     <EligibleMemberItem
       key={member.id}
@@ -88,9 +122,9 @@ const HeistItemDetails = ({ heistDetails, heistParticipants }: PropTypes) => {
 
   useEffect(() => {
     return () => {
+      dispatch(clearException());
       dispatch(clearEligibleMembers());
-      dispatch(clearHeistParticipants());
-      setSelectedMembers([]);
+      dispatch(clearHeistOutcome());
     };
   }, [dispatch]);
 
@@ -112,32 +146,10 @@ const HeistItemDetails = ({ heistDetails, heistParticipants }: PropTypes) => {
             <Grid columns={2}>
               <Grid.Row>
                 <Grid.Column>
-                  <List relaxed>
-                    <List.Item>
-                      <Label color="blue" horizontal>
-                        Start date
-                      </Label>
-                      {startTime.toLocaleString(DateTime.DATE_MED_WITH_WEEKDAY)}
-                    </List.Item>
-                    <List.Item>
-                      <Icon color="black" name="clock outline" />
-                      {startTime.toLocaleString(DateTime.TIME_24_WITH_SECONDS)}
-                    </List.Item>
-                  </List>
+                  <HeistTimeDetails heistTimeDetails={startTime} color="blue" />
                 </Grid.Column>
                 <Grid.Column>
-                  <List relaxed>
-                    <List.Item>
-                      <Label color="red" horizontal>
-                        End date
-                      </Label>
-                      {endTime.toLocaleString(DateTime.DATE_MED_WITH_WEEKDAY)}
-                    </List.Item>
-                    <List.Item>
-                      <Icon color="black" name="clock outline" />
-                      {endTime.toLocaleString(DateTime.TIME_24_WITH_SECONDS)}
-                    </List.Item>
-                  </List>
+                  <HeistTimeDetails heistTimeDetails={endTime} color="red" />
                 </Grid.Column>
               </Grid.Row>
             </Grid>
@@ -194,44 +206,55 @@ const HeistItemDetails = ({ heistDetails, heistParticipants }: PropTypes) => {
                 </List.Item>
               ))}
             </List>
-            <Divider style={{ marginBottom: "35px" }} />
-            <Grid columns={2}>
-              <Grid.Row>
-                <Grid.Column verticalAlign="bottom">
-                  <h2>Eligible monsters</h2>
-                </Grid.Column>
-                <Grid.Column>
-                  <Popup
-                    trigger={
-                      <Button
-                        icon="eye"
-                        circular
-                        floated="right"
-                        onClick={showEligibleMmembers}
+            {heistStatus === "PLANNING" && (
+              <>
+                <Divider style={{ marginBottom: "35px" }} />
+                <Grid columns={2}>
+                  <Grid.Row>
+                    <Grid.Column verticalAlign="bottom">
+                      <h2>Eligible monsters</h2>
+                    </Grid.Column>
+                    <Grid.Column>
+                      <Popup
+                        trigger={
+                          <Button
+                            icon="eye"
+                            circular
+                            floated="right"
+                            onClick={showEligibleMmembers}
+                          />
+                        }
+                        content="Show eligible monsters"
+                        style={popupStyle}
+                        inverted
                       />
-                    }
-                    content="Show eligible monsters"
-                    style={popupStyle}
-                    inverted
+                    </Grid.Column>
+                  </Grid.Row>
+                </Grid>
+                <List
+                  divided
+                  animated
+                  verticalAlign="middle"
+                  selection
+                  items={eligibleMembersItemList}
+                />
+                {eligibleMembers.length < 1 && (
+                  <Message
+                    info
+                    content="Click the 'eye' button to view eligible monsters"
+                    style={{ marginTop: "35px" }}
                   />
-                </Grid.Column>
-              </Grid.Row>
-            </Grid>
-            <List
-              divided
-              animated
-              verticalAlign="middle"
-              selection
-              items={eligibleMembersItemList}
-            />
-            {eligibleMembers.length < 1 && (
-              <Message
-                info
-                content="Click the 'eye' button to view eligible monsters"
-                style={{ marginTop: "35px" }}
-              />
+                )}
+              </>
             )}
           </Segment>
+          {heistStatus === "IN_PROGRESS" && (
+            <Segment padded style={{ borderRadius: "10px 10px 10px 10px" }}>
+              <HeistCountdownTimer
+                heistEndTime={endTime.toSeconds()}
+              />
+            </Segment>
+          )}
         </Grid.Column>
         <Grid.Column width={5}>
           <Segment padded style={{ borderRadius: "10px" }} textAlign="left">
@@ -246,7 +269,7 @@ const HeistItemDetails = ({ heistDetails, heistParticipants }: PropTypes) => {
             <Header sub dividing>
               Participants:
             </Header>
-            {heistParticipants.length < 1 && "List is empty"}
+            {heistParticipants.length < 1 && "No participants confirmed"}
             <List relaxed verticalAlign="middle" size="huge">
               {heistParticipants.length > 0 &&
                 heistParticipants.map((participant) => (
@@ -260,36 +283,36 @@ const HeistItemDetails = ({ heistDetails, heistParticipants }: PropTypes) => {
             <Header sub dividing>
               Outcome:
             </Header>
-            <Button
-              size="mini"
-              basic
-              circular
-              icon="eye"
-              style={{ marginTop: "10px" }}
-            />
+            {heistOutcome ? (
+              <Header
+                as="h4"
+                content={heistOutcome}
+                color={heistOutcome === "FAILED" ? "red" : "green"}
+                style={{ marginTop: "4px" }}
+              />
+            ) : (
+              "Heist is not yet finished"
+            )}
           </Segment>
-          {selectedMembers.length > 0 && (
-            <Segment padded style={{ borderRadius: "10px" }} textAlign="left">
-              <Header sub dividing>
-                Selected monsters: {selectedMembers.length}
-              </Header>
-              <List relaxed>
-                {selectedMembers.map((memberName, index) => (
-                  <List.Item key={index} onClick={removeSelectedMember}>
-                    <Label basic color="green">
-                      <Icon name="check circle" />
-                      {memberName}
-                      <Icon name="delete" />
-                    </Label>
-                  </List.Item>
-                ))}
-              </List>
+          <SelectedMembersItem
+            selectedMembers={selectedMembers}
+            removeHandler={removeSelectedMember}
+            confirmHandler={onConfirmHeistParticipants}
+          />
+          {heistStatus === "READY" && (
+            <Segment padded style={{ borderRadius: "10px" }}>
               <Button
-                color="blue"
-                style={{ marginTop: "15px" }}
+                icon="play circle"
+                content="Start heist"
                 fluid
-                size="tiny"
-                content="Confirm participants"
+                color="green"
+              />
+            </Segment>
+          )}
+          {errorMessage.invalidHeistStatus && (
+            <Segment style={{ borderRadius: "10px" }}>
+              <ErrorMessageContainer
+                message={errorMessage.invalidHeistStatus}
               />
             </Segment>
           )}

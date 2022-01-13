@@ -44,6 +44,8 @@ export const exceptionResponseMapper = (
     doubleSkill: "",
     mainSkillReference: "",
     heistAlreadyExists: "",
+    invalidHeistStatus: "",
+    heistAlreadyStarted: "",
   };
 
   switch (response.message) {
@@ -61,6 +63,12 @@ export const exceptionResponseMapper = (
       break;
     case ExceptionMessages.DOUBLE_SKILL_NOT_ALLOWED_HEIST:
       errorMesage.doubleSkill = response.message;
+      break;
+    case ExceptionMessages.INVALID_HEIST_STATUS:
+      errorMesage.invalidHeistStatus = response.message;
+      break;
+    case ExceptionMessages.HEIST_ALREADY_STARTED:
+      errorMesage.heistAlreadyStarted = response.message;
       break;
     default:
       break;

@@ -9,6 +9,8 @@ import {
   addNewHeist,
   viewHeistSkills,
   updateHeistSkills,
+  confirmHeistParticipants,
+  viewHeistOutcome,
 } from "./heistThunk";
 import { RestApiException } from "../../types/Exception";
 import { Member } from "../../types/Member";
@@ -16,6 +18,7 @@ import { toast } from "react-toastify";
 import { Skill } from "../../types/Skill";
 
 export interface HeistState {
+  heistOutcome: string;
   heistSkills: Skill[];
   heistParticipants: Member[];
   eligibleMembers: Member[];
@@ -44,6 +47,7 @@ const initialException: RestApiException = {
 };
 
 const initialState: HeistState = {
+  heistOutcome: "",
   heistSkills: [],
   heistParticipants: [],
   eligibleMembers: [],
@@ -65,6 +69,12 @@ export const heistSlice = createSlice({
     },
     clearException(state) {
       state.exception = initialException;
+    },
+    clearHeistDetails(state) {
+      state.heistDetails = initialHeistDetails;
+    },
+    clearHeistOutcome(state) {
+      state.heistOutcome = "";
     },
   },
   extraReducers: (builder) => {
@@ -131,7 +141,7 @@ export const heistSlice = createSlice({
         state.loadingStatus = LoadingStatus.Failed;
         if (payload) state.exception = payload;
       })
-      // GET -> View heist participants
+      // GET -> View heist skills
       .addCase(viewHeistSkills.pending, (state) => {
         state.loadingStatus = LoadingStatus.Loading;
       })
@@ -143,7 +153,7 @@ export const heistSlice = createSlice({
         state.loadingStatus = LoadingStatus.Failed;
         if (payload) state.exception = payload;
       })
-      // Patch -> Update heist required skills
+      // PATCH -> Update heist required skills
       .addCase(updateHeistSkills.pending, (state) => {
         state.loadingStatus = LoadingStatus.Loading;
         toast.loading("Updating skills...", { toastId: "t02skillsUpdate" });
@@ -157,11 +167,45 @@ export const heistSlice = createSlice({
         state.loadingStatus = LoadingStatus.Failed;
         toast.dismiss("t02skillsUpdate");
         if (payload) state.exception = payload;
+      })
+      // PUT -> Confirm heist participants
+      .addCase(confirmHeistParticipants.pending, (state) => {
+        state.loadingStatus = LoadingStatus.Loading;
+        toast.loading("Confirming participants...", {
+          toastId: "t03confirmParticipants",
+        });
+      })
+      .addCase(confirmHeistParticipants.fulfilled, (state) => {
+        state.loadingStatus = LoadingStatus.Succeeded;
+        toast.dismiss("t03confirmParticipants");
+        toast.success("Participants confirmed successfully");
+      })
+      .addCase(confirmHeistParticipants.rejected, (state, { payload }) => {
+        state.loadingStatus = LoadingStatus.Failed;
+        toast.dismiss("t03confirmParticipants");
+        if (payload) state.exception = payload;
+      })
+      // GET -> View heist outcome
+      .addCase(viewHeistOutcome.pending, (state) => {
+        state.loadingStatus = LoadingStatus.Loading;
+      })
+      .addCase(viewHeistOutcome.fulfilled, (state, { payload }) => {
+        state.loadingStatus = LoadingStatus.Succeeded;
+        state.heistOutcome = payload.outcome;
+      })
+      .addCase(viewHeistOutcome.rejected, (state, { payload }) => {
+        state.loadingStatus = LoadingStatus.Failed;
+        if (payload) state.exception = payload;
       });
   },
 });
 
-export const { clearEligibleMembers, clearHeistParticipants, clearException } =
-  heistSlice.actions;
+export const {
+  clearEligibleMembers,
+  clearHeistParticipants,
+  clearException,
+  clearHeistDetails,
+  clearHeistOutcome,
+} = heistSlice.actions;
 
 export default heistSlice.reducer;

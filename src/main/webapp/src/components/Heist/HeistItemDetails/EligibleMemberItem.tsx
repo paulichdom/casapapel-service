@@ -1,7 +1,7 @@
 import React, { SyntheticEvent } from "react";
 import { Icon, List, Image, ListItemProps } from "semantic-ui-react";
-import { getMemberImage } from "../../services/ImageService";
-import { Member } from "../../types/Member";
+import { getMemberImage } from "../../../services/ImageService"
+import { Member } from "../../../types/Member"
 
 import "./EligibleMemberItem.css";
 

@@ -10,3 +10,7 @@ export interface Heist {
   heistStatus: string;
   description?: string;
 }
+
+export interface HeistParticipants {
+  members: string[]
+}

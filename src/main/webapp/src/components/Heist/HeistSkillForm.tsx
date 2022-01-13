@@ -62,6 +62,7 @@ const HeistSkillForm = ({ heistSkills }: PropTypes) => {
 
   let errorMessage: ErrorMessage = {
       doubleSkill: "",
+      heistAlreadyStarted: "",
     },
     errorMap,
     skillErrors: string[][] | undefined;
@@ -162,6 +163,9 @@ const HeistSkillForm = ({ heistSkills }: PropTypes) => {
         </Form.Field>
         {errorMessage && errorMessage.doubleSkill && (
           <ErrorMessageContainer message={errorMessage.doubleSkill} />
+        )}
+        {errorMessage && errorMessage.heistAlreadyStarted && (
+          <ErrorMessageContainer message={errorMessage.heistAlreadyStarted} />
         )}
         <Transition.Group as={List} duration={650}>
           {formSkills.map((skill, index) => (

@@ -26,7 +26,7 @@ const MemberItem = (props: PropTypes) => {
         {status === "AVAILABLE" && <Icon color="green" name="check circle" />}
         {status === "INCARCERATED" && <Icon color="red" name="times circle" />}
         {status === "EXPIRED" && <Icon color="grey" name="minus circle" />}
-        {status === "REDIRED" && <Icon color="orange" name="stop circle" />}
+        {status === "RETIRED" && <Icon color="orange" name="stop circle" />}
         {status}
       </Card.Content>
     </Card>

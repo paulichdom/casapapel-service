@@ -9,4 +9,8 @@ export class ExceptionMessages {
     "Cannot create heist. Heist with same name already exists";
   static readonly DOUBLE_SKILL_NOT_ALLOWED_HEIST =
     "Duplicate skills with same level are not allowed";
+  static readonly INVALID_HEIST_STATUS =
+    "Cannot confirm participants. Heist status is not 'PLANNING'!";
+  static readonly HEIST_ALREADY_STARTED =
+    "Cannot update heist skills. Heist has already started";
 }

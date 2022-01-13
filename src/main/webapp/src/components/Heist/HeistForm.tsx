@@ -52,6 +52,7 @@ const HeistForm = () => {
   const [endDate, setEndDate] = useState("");
   const [formSkills, setFormSkills] = useState([buildSkill("")]);
   const [heistStatus, setHeistStatus] = useState("");
+  const [invalidDate, setInvalidDate] = useState("");
 
   let { exception } = useAppSelector((state: RootState) => state.heist);
 
@@ -139,18 +140,16 @@ const HeistForm = () => {
     value: T
   ) => {
     if (typeof value === "string") {
-      console.log(value);
+      setInvalidDate(value);
     } else {
-      console.log(value.format());
       setStartDate(value.format());
     }
   };
 
   const handleEndDateChange = <T extends moment.Moment | string>(value: T) => {
     if (typeof value === "string") {
-      console.log(value);
+      setInvalidDate(value);
     } else {
-      console.log(value.format());
       setEndDate(value.format());
     }
   };
@@ -215,6 +214,7 @@ const HeistForm = () => {
             {errorMap && errorMap.validStartDate && (
               <ErrorMessageContainer message={errorMap.validStartDate} />
             )}
+            {invalidDate && <ErrorMessageContainer message={invalidDate} />}
           </Form.Field>
           <Form.Field width={5}>
             <label>Select end date</label>
