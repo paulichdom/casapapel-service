@@ -108,3 +108,12 @@ export const viewHeistOutcome = createAsyncThunk<
 >("heist/outcome", async (heistId, thunkApi) => {
   return handleRequest(HeistService.viewHeistOutcome(heistId), thunkApi);
 });
+
+// PUT -> Start heist manually
+export const startHeistManually = createAsyncThunk<
+  void,
+  number,
+  { rejectValue: RestApiException }
+>("heist/start", async (heistId, thunkApi) => {
+  return handleRequest(HeistService.startHeistManually(heistId), thunkApi);
+});

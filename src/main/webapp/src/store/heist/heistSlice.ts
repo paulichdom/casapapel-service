@@ -11,6 +11,7 @@ import {
   updateHeistSkills,
   confirmHeistParticipants,
   viewHeistOutcome,
+  startHeistManually,
 } from "./heistThunk";
 import { RestApiException } from "../../types/Exception";
 import { Member } from "../../types/Member";
@@ -195,6 +196,23 @@ export const heistSlice = createSlice({
       })
       .addCase(viewHeistOutcome.rejected, (state, { payload }) => {
         state.loadingStatus = LoadingStatus.Failed;
+        if (payload) state.exception = payload;
+      })
+      // PUT -> Start heist manually
+      .addCase(startHeistManually.pending, (state) => {
+        state.loadingStatus = LoadingStatus.Loading;
+        toast.loading("Starting heist...", {
+          toastId: "t04startHeist",
+        });
+      })
+      .addCase(startHeistManually.fulfilled, (state) => {
+        state.loadingStatus = LoadingStatus.Succeeded;
+        toast.dismiss("t04startHeist");
+        toast.success("Heist successfully started");
+      })
+      .addCase(startHeistManually.rejected, (state, { payload }) => {
+        state.loadingStatus = LoadingStatus.Failed;
+        toast.dismiss("t04startHeist");
         if (payload) state.exception = payload;
       });
   },

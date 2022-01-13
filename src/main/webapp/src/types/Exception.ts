@@ -24,4 +24,5 @@ export interface ErrorMessage {
   heistAlreadyExists?: string;
   invalidHeistStatus?: string;
   heistAlreadyStarted?: string;
+  membersAlreadyConfirmed?: string;
 }

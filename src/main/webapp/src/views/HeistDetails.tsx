@@ -5,6 +5,9 @@ import HeistItemDetails from "../components/Heist/HeistItemDetails/HeistItemDeta
 import LoadingSpinner from "../components/ui/LoadingSpinner";
 import { clearHeistParticipants } from "../store/heist/heistSlice";
 import {
+  confirmHeistParticipants,
+  HeistParticipantsData,
+  startHeistManually,
   viewHeistDetails,
   viewHeistOutcome,
   viewHeistParticipants,
@@ -16,6 +19,9 @@ const HeistDetails = () => {
   let { heistId } = useParams();
 
   const [heistDetailsFetched, setHeistDetailsFetched] = useState(false);
+  const [participansConfirmed, setParticipansConfirmed] = useState(false);
+  const [heistStarted, setHeistStarted] = useState(false);
+  const [heistFinished, setHeistFinished] = useState(false);
 
   const dispatch = useAppDispatch();
 
@@ -25,7 +31,7 @@ const HeistDetails = () => {
         setHeistDetailsFetched(true);
       }
     });
-  }, [dispatch, heistId]);
+  }, [dispatch, heistId, participansConfirmed, heistStarted, heistFinished]);
 
   const { heistDetails, heistParticipants, loadingStatus } = useAppSelector(
     (state) => state.heist
@@ -43,6 +49,28 @@ const HeistDetails = () => {
     }
   }, [dispatch, heistId, heistStatus, heistDetailsFetched]);
 
+  const confirmHeistParticipantsHandler = (data: HeistParticipantsData) => {
+    dispatch(confirmHeistParticipants(data)).then((response) => {
+      if (response.meta.requestStatus === "fulfilled") {
+        setParticipansConfirmed(true);
+      }
+    });
+  };
+
+  const startHeistManuallyHandler = (heistId: number) => {
+    dispatch(startHeistManually(heistId)).then((response) => {
+      if (response.meta.requestStatus === "fulfilled") {
+        setHeistStarted(true);
+      }
+    });
+  };
+
+  const heistFinishedHandler = () => {
+    setHeistFinished(true);
+    console.log("HEIST FINISHED");
+    
+  }
+
   if (loadingStatus === LoadingStatus.Loading)
     return <LoadingSpinner content="heist details" />;
 
@@ -59,6 +87,9 @@ const HeistDetails = () => {
     <HeistItemDetails
       heistDetails={heistDetails}
       heistParticipants={heistParticipants}
+      confirmHeistParticipantsHandler={confirmHeistParticipantsHandler}
+      startHeistManuallyHandler={startHeistManuallyHandler}
+      heistFinishedHandler={heistFinishedHandler}
     />
   );
 };

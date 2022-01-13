@@ -46,6 +46,7 @@ export const exceptionResponseMapper = (
     heistAlreadyExists: "",
     invalidHeistStatus: "",
     heistAlreadyStarted: "",
+    membersAlreadyConfirmed: "",
   };
 
   switch (response.message) {
@@ -69,6 +70,9 @@ export const exceptionResponseMapper = (
       break;
     case ExceptionMessages.HEIST_ALREADY_STARTED:
       errorMesage.heistAlreadyStarted = response.message;
+      break;
+    case ExceptionMessages.ELIGIBLE_MEMBERS_ALREADY_CONFIRMED:
+      errorMesage.membersAlreadyConfirmed = response.message;
       break;
     default:
       break;

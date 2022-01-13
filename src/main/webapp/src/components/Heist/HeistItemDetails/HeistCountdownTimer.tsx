@@ -30,15 +30,23 @@ const getTimeDays = (time: number) => (time / daySeconds) | 0;
 
 interface PropTypes {
   heistEndTime: number;
+  heistFinishedHandler: () => void;
 }
 
-const HeistCountdownTimer = ({ heistEndTime }: PropTypes) => {
-  const startTime = Date.now() / 1000; // use UNIX timestamp in seconds
-  // const endTime = startTime + 243248; // use UNIX timestamp in seconds */
+const HeistCountdownTimer = ({
+  heistEndTime,
+  heistFinishedHandler,
+}: PropTypes) => {
+  const startTime = Date.now() / 1000;
 
   const remainingTime = heistEndTime - startTime;
   const days = Math.ceil(remainingTime / daySeconds);
   const daysDuration = days * daySeconds;
+
+  console.log(remainingTime);
+  
+  remainingTime === 0 && heistFinishedHandler();
+
   return (
     <div className="counters">
       <CountdownCircleTimer

@@ -13,4 +13,6 @@ export class ExceptionMessages {
     "Cannot confirm participants. Heist status is not 'PLANNING'!";
   static readonly HEIST_ALREADY_STARTED =
     "Cannot update heist skills. Heist has already started";
+  static readonly ELIGIBLE_MEMBERS_ALREADY_CONFIRMED =
+    "All eligible and available Members have already been confirmed participants of another ongoing heist";
 }

@@ -13,7 +13,7 @@ const HeistURI = {
   UPDATE_HEIST_SKILS: (heistId: number) => `/heist/${heistId}/skills`,
   CONFIRM_HEIST_PARTICIPANTS: (heistId: number) => `/heist/${heistId}/members`,
   VIEW_HEIST_OUTCOME: (heistId: number) => `/heist/${heistId}/outcome`,
-  START_HEIST_MANUALLY: (heistId: number) => `heist/${heistId}/start`,
+  START_HEIST_MANUALLY: (heistId: number) => `/heist/${heistId}/start`,
 };
 
 class HeistService {
@@ -51,6 +51,10 @@ class HeistService {
 
   viewHeistOutcome(heistId: number) {
     return http.get(HeistURI.VIEW_HEIST_OUTCOME(heistId));
+  }
+
+  startHeistManually(heistId: number) {
+    return http.put(HeistURI.START_HEIST_MANUALLY(heistId));
   }
 }
 

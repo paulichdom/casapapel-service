@@ -19,7 +19,6 @@ import { Heist } from "../../../types/Heist";
 import {
   HeistParticipantsData,
   viewEligibleMembers,
-  confirmHeistParticipants,
 } from "../../../store/heist/heistThunk";
 import {
   clearEligibleMembers,
@@ -43,9 +42,19 @@ import HeistCountdownTimer from "./HeistCountdownTimer";
 interface PropTypes {
   heistDetails: Heist;
   heistParticipants: Member[];
+  confirmHeistParticipantsHandler: (data: HeistParticipantsData) => void;
+  startHeistManuallyHandler: (heistId: number) => void;
+  heistFinishedHandler: () => void;
 }
 
-const HeistItemDetails = ({ heistDetails, heistParticipants }: PropTypes) => {
+const HeistItemDetails = (props: PropTypes) => {
+  const {
+    heistDetails,
+    confirmHeistParticipantsHandler,
+    startHeistManuallyHandler,
+    heistFinishedHandler
+  } = props;
+
   const [selectedMembers, setSelectedMembers] = useState<string[]>([]);
 
   const { id, name, location, skills, heistStatus, startDate, endDate } =
@@ -57,7 +66,7 @@ const HeistItemDetails = ({ heistDetails, heistParticipants }: PropTypes) => {
     dispatch(viewEligibleMembers(id!));
   };
 
-  const { eligibleMembers, heistOutcome } = useAppSelector(
+  const { eligibleMembers, heistOutcome, heistParticipants } = useAppSelector(
     (state: RootState) => state.heist
   );
 
@@ -65,6 +74,7 @@ const HeistItemDetails = ({ heistDetails, heistParticipants }: PropTypes) => {
 
   let errorMessage: ErrorMessage = {
     invalidHeistStatus: "",
+    membersAlreadyConfirmed: "",
   };
 
   errorMessage = exceptionResponseMapper(exception);
@@ -100,7 +110,11 @@ const HeistItemDetails = ({ heistDetails, heistParticipants }: PropTypes) => {
   };
 
   const onConfirmHeistParticipants = () => {
-    dispatch(confirmHeistParticipants(participantsData));
+    confirmHeistParticipantsHandler(participantsData);
+  };
+
+  const onStartHeistManually = () => {
+    startHeistManuallyHandler(id!);
   };
 
   const eligibleMembersItemList = eligibleMembers.map((member) => (
@@ -245,14 +259,17 @@ const HeistItemDetails = ({ heistDetails, heistParticipants }: PropTypes) => {
                     style={{ marginTop: "35px" }}
                   />
                 )}
+                {errorMessage && errorMessage.membersAlreadyConfirmed && (
+                  <ErrorMessageContainer
+                    message={errorMessage.membersAlreadyConfirmed}
+                  />
+                )}
               </>
             )}
           </Segment>
           {heistStatus === "IN_PROGRESS" && (
             <Segment padded style={{ borderRadius: "10px 10px 10px 10px" }}>
-              <HeistCountdownTimer
-                heistEndTime={endTime.toSeconds()}
-              />
+              <HeistCountdownTimer heistEndTime={endTime.toSeconds()} heistFinishedHandler={heistFinishedHandler}/>
             </Segment>
           )}
         </Grid.Column>
@@ -306,6 +323,7 @@ const HeistItemDetails = ({ heistDetails, heistParticipants }: PropTypes) => {
                 content="Start heist"
                 fluid
                 color="green"
+                onClick={onStartHeistManually}
               />
             </Segment>
           )}
