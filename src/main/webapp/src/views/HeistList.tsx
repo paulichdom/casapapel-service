@@ -1,6 +1,5 @@
 import React, { Fragment, useEffect, useState } from "react";
-import { Header, Item } from "semantic-ui-react";
-import HeistItem from "../components/Heist/HeistItem";
+import { Header, Message } from "semantic-ui-react";
 import HeistItemGroup from "../components/Heist/HeistItemGroup";
 import LoadingSpinner from "../components/ui/LoadingSpinner";
 import PageHeader from "../components/ui/PageHeader";
@@ -16,8 +15,7 @@ const HeistList = () => {
 
   const { heistList, loadingStatus } = useAppSelector((state) => state.heist);
 
-  const BACON_IPSUM_URI =
-    `https://baconipsum.com/api/?type=all-meat&paras=${heistList.length}&start-with-lorem=1`;
+  const BACON_IPSUM_URI = `https://baconipsum.com/api/?type=all-meat&paras=${heistList.length}&start-with-lorem=1`;
 
   useEffect(() => {
     dispatch(getAllHeists());
@@ -26,12 +24,19 @@ const HeistList = () => {
 
   if (loadingStatus === LoadingStatus.Loading)
     return <LoadingSpinner content="Heists" />;
+  
   if (!heistList) return <Header>No heists found</Header>;
 
   return (
     <Fragment>
       <PageHeader title="Heists" showButton={false} />
-      <HeistItemGroup heistList={heistList} description={baconIpsum} /> 
+      <HeistItemGroup heistList={heistList} description={baconIpsum} />
+      {heistList.length < 1 && (
+        <Message
+          header="Heist list is Empty"
+          content="Click on the plus (+) sign in the navbar to add a new heist."
+        />
+      )}
     </Fragment>
   );
 };

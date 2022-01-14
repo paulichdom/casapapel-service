@@ -43,8 +43,6 @@ const HeistCountdownTimer = ({
   const days = Math.ceil(remainingTime / daySeconds);
   const daysDuration = days * daySeconds;
 
-  console.log(remainingTime);
-  
   remainingTime === 0 && heistFinishedHandler();
 
   return (

@@ -4,10 +4,13 @@ import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { getAllMembers } from "../store/member/memberThunk";
 import { LoadingStatus } from "../types/LoadingStatus";
 import LoadingSpinner from "../components/ui/LoadingSpinner";
-import PageHeader from "../components/ui/PageHeader";
-import { Header } from "semantic-ui-react";
+import { Button, Divider, Header, Icon, Message } from "semantic-ui-react";
+import useToggle from "../util/hooks/useToggle";
+import MemberTable from "../components/Member/MemberTable";
 
 const Members = () => {
+  const [isViewChanged, setIsViewChanged] = useToggle();
+
   const dispatch = useAppDispatch();
 
   useEffect(() => {
@@ -22,15 +25,32 @@ const Members = () => {
 
   return (
     <Fragment>
-      {/* TODO: Add change to table view functionality */}
-      <PageHeader
-        title="Monsters"
-        showButton={true}
-        buttonTitle="Change view"
-        buttonColor="blue"
-        path="/"
-      />
-      <MemberItemGroup memberList={memberList} />
+      <Button
+        color="blue"
+        icon
+        labelPosition="right"
+        floated="right"
+        onClick={setIsViewChanged}
+      >
+        Change view
+        <Icon name="eye" />
+      </Button>
+
+      <Header as="h2" textAlign="left">
+        Monsters
+      </Header>
+      <Divider />
+      {isViewChanged ? (
+        <MemberTable memberList={memberList} />
+      ) : (
+        <MemberItemGroup memberList={memberList} />
+      )}
+      {memberList.length < 1 && (
+        <Message
+          header="Monster list is Empty"
+          content="Click on the plus (+) sign in the navbar to create a new monster."
+        />
+      )}
     </Fragment>
   );
 };
