@@ -95,11 +95,15 @@ public class HeistServiceImpl implements HeistService {
         Date heistStartDate = newHeist.getStartDate();
         Date heistEndDate = newHeist.getEndDate();
 
+//        long heistStartDate = newHeist.getStartDate().getTime();
+//        long heistEndDate = newHeist.getEndDate().getTime();
+
         final TriggerDetails startHeistTriggerDetails = new TriggerDetails(
                 1,
                 false,
                 0,
                 ScheduleUtils.getDateDiff(heistStartDate, TimeUnit.MILLISECONDS),
+                //heistStartDate,
                 newHeist.getId());
 
         final TriggerDetails finishHeistTriggerDetails = new TriggerDetails(
@@ -107,6 +111,7 @@ public class HeistServiceImpl implements HeistService {
                 false,
                 0,
                 ScheduleUtils.getDateDiff(heistEndDate, TimeUnit.MILLISECONDS),
+                //heistEndDate,
                 newHeist.getId());
 
         jobSchedulerService.schedule(StartHeistJob.class, startHeistTriggerDetails);

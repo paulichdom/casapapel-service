@@ -3,7 +3,6 @@ package ag04.assignment.heist.scheduler;
 import org.quartz.*;
 
 import java.util.Date;
-import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
 public final class ScheduleUtils {
@@ -39,23 +38,13 @@ public final class ScheduleUtils {
     }
 
     /**
-     * Get time in milliseconds based on a given time zone (Local time zone)
-     * @return current local time in milliseconds
-     */
-    public static long currentLocalTimeMillis() {
-        long date = System.currentTimeMillis();
-        int offset = TimeZone.getDefault().getOffset(date);
-        return date + offset;
-    }
-
-    /**
-     * Get a diff between desired date and current local time
+     * Calculate time difference between desired date and current local time
      * @param date desired date
      * @param timeUnit the unit in which you want the diff
      * @return the diff value, in the provided unit
      */
     public static long getDateDiff(Date date, TimeUnit timeUnit) {
-        long diffInMillis = date.getTime() - ScheduleUtils.currentLocalTimeMillis();
+        long diffInMillis = date.getTime() - System.currentTimeMillis();
         return timeUnit.convert(diffInMillis, timeUnit);
     }
 }

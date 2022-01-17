@@ -27,6 +27,8 @@ public class SchedulerServiceImpl implements SchedulerService {
         final JobDetail jobDetail = ScheduleUtils.buildJobDetail(jobClass, info);
         final Trigger trigger = ScheduleUtils.buildTrigger(jobClass, info);
 
+
+
         try {
             scheduler.scheduleJob(jobDetail, trigger);
         } catch (SchedulerException e) {

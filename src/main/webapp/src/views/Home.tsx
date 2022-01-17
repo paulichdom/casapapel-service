@@ -1,8 +1,6 @@
 import React from "react";
 
-import { Segment, Header, Icon, Divider, Embed } from "semantic-ui-react";
-
-import image from "../assets/cookiemonster.png";
+import { Segment, Header, Icon, Divider } from "semantic-ui-react";
 
 const Home = () => {
   return (
@@ -12,8 +10,6 @@ const Home = () => {
       <Divider />
       <Header as="h1" content="Personal Heist Management Tool" />
       <Header as="h3" content="Create monsters. Manage heists efficiently." />
-      <Divider hidden />
-      <Embed id="ExeEgDe5JQU" source="youtube" placeholder={image} />
     </Segment>
   );
 };

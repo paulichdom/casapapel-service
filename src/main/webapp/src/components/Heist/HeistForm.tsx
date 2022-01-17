@@ -143,6 +143,7 @@ const HeistForm = () => {
       setInvalidDate(value);
     } else {
       setStartDate(value.format());
+      console.log(value.format());
     }
   };
 
@@ -151,6 +152,7 @@ const HeistForm = () => {
       setInvalidDate(value);
     } else {
       setEndDate(value.format());
+      console.log(value.format());
     }
   };
 
