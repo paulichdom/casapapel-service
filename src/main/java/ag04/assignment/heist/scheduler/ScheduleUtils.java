@@ -29,6 +29,10 @@ public final class ScheduleUtils {
             builder = builder.withRepeatCount(info.getTotalFireCount() - 1);
         }
 
+        if(info.getInitialOffsetMs() < 0) {
+            info.setInitialOffsetMs(0);
+        }
+
         return TriggerBuilder
                 .newTrigger()
                 .withIdentity(jobClass.getSimpleName())

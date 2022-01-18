@@ -1,8 +1,0 @@
-.ui.dimmer {
-  transition: background-color 0.85s ease !important;
-  background-color: transparent !important;
-}
-
-.modal-fade-in-p2 .ui.dimmer {
-  background-color: rgba(0, 0, 0, 0.45) !important;
-}
